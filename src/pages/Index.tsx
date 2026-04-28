@@ -1,6 +1,7 @@
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { Hero } from "@/components/site/Hero";
 import { ShowcaseMarquee } from "@/components/site/ShowcaseMarquee";
+import { FeaturesShowcase } from "@/components/site/FeaturesShowcase";
 import { Features } from "@/components/site/Features";
 import { HowItWorks } from "@/components/site/HowItWorks";
 import { Testimonials } from "@/components/site/Testimonials";
@@ -16,6 +17,7 @@ const Index = () => {
       <SiteHeader />
       <Hero />
       <ShowcaseMarquee />
+      <FeaturesShowcase />
       <Features />
       <HowItWorks />
       <ToolsSection />
