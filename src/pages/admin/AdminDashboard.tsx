@@ -274,6 +274,8 @@ export default function AdminDashboard() {
   const [tpDeleteId, setTpDeleteId]               = useState<string | null>(null);
   const [tpEditId, setTpEditId]                   = useState<string | null>(null);
   const [tpConfirmDeleteId, setTpConfirmDeleteId] = useState<string | null>(null);
+  const [confirmDeleteCatId, setConfirmDeleteCatId] = useState<string | null>(null);
+  const [confirmRemoveAdmin, setConfirmRemoveAdmin] = useState<AdminEntry | null>(null);
   const [sidebarOpen, setSidebarOpen]             = useState(true);
   const [supabaseReady, setSupabaseReady]         = useState(false);
 
@@ -946,6 +948,22 @@ export default function AdminDashboard() {
           message="Permanently delete this trending prompt? Users will no longer see it."
           onConfirm={() => { deleteTrendingPrompt(tpConfirmDeleteId); setTpConfirmDeleteId(null); }}
           onCancel={() => setTpConfirmDeleteId(null)}
+        />
+      )}
+
+      {confirmDeleteCatId && (
+        <ConfirmDialog
+          message="Delete this category? Any trending prompts using it will lose their category."
+          onConfirm={() => { deleteCategory(confirmDeleteCatId); setConfirmDeleteCatId(null); }}
+          onCancel={() => setConfirmDeleteCatId(null)}
+        />
+      )}
+
+      {confirmRemoveAdmin && (
+        <ConfirmDialog
+          message={`Remove admin access for "${confirmRemoveAdmin.email}"? They will lose all admin privileges immediately.`}
+          onConfirm={() => { removeAdmin(confirmRemoveAdmin); setConfirmRemoveAdmin(null); }}
+          onCancel={() => setConfirmRemoveAdmin(null)}
         />
       )}
 
@@ -1859,7 +1877,7 @@ export default function AdminDashboard() {
                         {trendingCats.map(c => (
                           <div key={c.id} className="flex items-center justify-between px-3 py-2 rounded-lg bg-secondary/50 border border-border/30">
                             <span className="text-xs font-medium text-foreground">{c.name}</span>
-                            <button onClick={() => deleteCategory(c.id)}
+                            <button onClick={() => setConfirmDeleteCatId(c.id)}
                               className="p-1 rounded text-muted-foreground/40 hover:text-red-400 transition-colors">
                               <Trash2 className="h-3 w-3" />
                             </button>
@@ -2015,7 +2033,7 @@ export default function AdminDashboard() {
                           </div>
                           {!isSelf && (
                             <button
-                              onClick={() => removeAdmin(entry)}
+                              onClick={() => setConfirmRemoveAdmin(entry)}
                               className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-semibold bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 transition-all whitespace-nowrap"
                             >
                               <UserX className="h-3 w-3" /> Remove

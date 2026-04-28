@@ -19,6 +19,7 @@ const TYPE_META: Record<ContentType, { icon: React.ElementType; color: string; b
 
 function FavoriteCard({ item }: { item: FavoriteItem }) {
   const { removeFavorite } = useFavorites();
+  const [confirming, setConfirming] = useState(false);
   const meta = TYPE_META[item.type];
   const Icon = meta.icon;
   const savedDate = new Date(item.savedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -48,13 +49,30 @@ function FavoriteCard({ item }: { item: FavoriteItem }) {
         >
           <Search className="h-3.5 w-3.5" />
         </Link>
-        <button
-          onClick={() => removeFavorite(item.id)}
-          className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-          title="Remove from favorites"
-        >
-          <Trash2 className="h-3.5 w-3.5" />
-        </button>
+        {confirming ? (
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => { removeFavorite(item.id); setConfirming(false); }}
+              className="px-2 py-1 rounded-md text-[10px] font-semibold bg-destructive text-white hover:bg-destructive/90 transition-colors"
+            >
+              Remove
+            </button>
+            <button
+              onClick={() => setConfirming(false)}
+              className="px-2 py-1 rounded-md text-[10px] font-medium border border-border/60 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => setConfirming(true)}
+            className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+            title="Remove from favorites"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+        )}
       </div>
     </div>
   );
