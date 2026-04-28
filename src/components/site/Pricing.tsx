@@ -361,7 +361,7 @@ function PaymentModal({ plan, onClose }: { plan: Plan; onClose: () => void }) {
                 Submit Payment <ArrowRight className="h-3.5 w-3.5" />
               </button>
               <p className="text-center text-[10.5px] text-muted-foreground/40">
-                Account activated within 1 minute after verification
+                Access unlocked instantly once payment is verified
               </p>
             </form>
           )}
@@ -377,7 +377,7 @@ function PaymentModal({ plan, onClose }: { plan: Plan; onClose: () => void }) {
                 <span className="text-xs font-medium text-yellow-400">Pending approval</span>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                Your payment info has been submitted. Our team will verify and activate your account — usually within <strong className="text-foreground">a few minutes</strong>.
+                Your payment details have been submitted. Our team verifies payments and activates accounts as fast as possible — you'll get access very soon.
               </p>
               <div className="rounded-xl bg-secondary/50 border border-border/50 px-4 py-3 text-left mb-4 space-y-1.5">
                 <p className="text-xs text-muted-foreground flex justify-between">
@@ -547,7 +547,7 @@ export const Pricing = () => {
             <span className="px-3 py-1.5 rounded-lg text-[12px] font-bold border" style={{ color: "#E2136E", background: "#E2136E12", borderColor: "#E2136E30" }}>bKash</span>
             <span className="px-3 py-1.5 rounded-lg text-[12px] font-bold border" style={{ color: "#F7941D", background: "#F7941D12", borderColor: "#F7941D30" }}>Nagad</span>
           </div>
-          <p className="text-[11px] text-muted-foreground/40">Manual payment · Account activated within 1 minute</p>
+          <p className="text-[11px] text-muted-foreground/40">Secure manual payment · Access unlocked after verification</p>
         </div>
 
       </div>

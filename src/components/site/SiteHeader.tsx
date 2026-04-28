@@ -21,7 +21,6 @@ export const SiteHeader = () => {
           <nav className="hidden md:flex items-center gap-7 text-sm text-muted-foreground">
             <a href="#features" className="hover:text-foreground transition-colors">Features</a>
             <a href="#tools" className="hover:text-foreground transition-colors">Tools</a>
-            <a href="#testimonials" className="hover:text-foreground transition-colors">Reviews</a>
             <a href="#pricing" className="hover:text-foreground transition-colors">Pricing</a>
             <a href="#faq" className="hover:text-foreground transition-colors">FAQ</a>
           </nav>
@@ -44,7 +43,7 @@ export const SiteHeader = () => {
                   </Link>
                 </Button>
                 <Button asChild variant="hero" size="sm">
-                  <Link to="/register">Get Started Free</Link>
+                  <Link to="/register">Get Started</Link>
                 </Button>
               </>
             )}

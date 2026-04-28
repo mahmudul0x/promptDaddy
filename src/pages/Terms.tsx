@@ -128,7 +128,7 @@ const Terms = () => {
               <ul>
                 <li>Send the subscription fee to our designated bKash or Nagad number shown on the pricing page.</li>
                 <li>Submit your payment details (name, email, transaction ID or sender number) through the payment form on the site.</li>
-                <li>Our team will verify the transaction and activate your account — typically within a few minutes during business hours.</li>
+                <li>Our team will verify the transaction and activate your account as quickly as possible.</li>
               </ul>
               <p className="mt-3">
                 You are responsible for ensuring you send the correct amount to the correct number. We are not

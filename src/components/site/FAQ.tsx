@@ -3,7 +3,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 const faqs = [
   {
     q: "How do I make a payment?",
-    a: "You can pay using bKash or Nagad. Choose your preferred plan in the Pricing section, send the payment to our number, then submit the transaction ID in the form. Your account is usually activated within 10 minutes after verification.",
+    a: "You can pay using bKash or Nagad. Choose your preferred plan in the Pricing section, send the payment to our number, then submit the transaction ID in the form. Our team verifies payments and unlocks your account as quickly as possible.",
   },
   {
     q: "How long does the monthly plan stay active?",
@@ -15,7 +15,7 @@ const faqs = [
   },
   {
     q: "How long does activation take after payment?",
-    a: "Most accounts are activated within 10 minutes. During busy hours it can take a little longer, but if it goes beyond that you can contact us directly.",
+    a: "Our team reviews and activates payments as fast as possible. If your account hasn't been unlocked yet, you can contact us directly and we'll sort it out right away.",
   },
   {
     q: "Do I need ChatGPT Plus or Claude Pro to use this platform?",
@@ -28,6 +28,10 @@ const faqs = [
   {
     q: "What is included inside the platform?",
     a: "You get access to expert LLM prompts, image prompts, Claude skills, AI search, prompt enhancers, tutorials, videos, AI news, automation templates, and model recommendations.",
+  },
+  {
+    q: "What is your refund policy?",
+    a: "All sales are final. Because our content is digital and immediately accessible after activation, we do not offer refunds. Exceptions may be made if your payment was confirmed but your account was never activated, or if a duplicate payment was made by mistake. Email mahmudulabin@gmail.com within 7 days with your transaction ID.",
   },
   {
     q: "Where should I contact you if I face a problem?",

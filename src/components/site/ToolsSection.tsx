@@ -4,23 +4,23 @@ import { Button } from "@/components/ui/button";
 const tools = [
   {
     icon: Search,
-    title: "Semantic Oracle",
-    desc: "Describe what you want to achieve. The AI conjures the exact incantation, tutorial, or template from the vault — instantly.",
+    title: "AI Search",
+    desc: "Describe what you want to achieve. Instantly surface the exact prompt, tutorial, or template you need — across all 1,000+ resources.",
   },
   {
     icon: Wand2,
-    title: "Incantation Transmuter",
-    desc: "Paste in any rough prompt. Our engine rewrites it with advanced prompting alchemy to extract 10× more power from any LLM.",
+    title: "Prompt Enhancer",
+    desc: "Paste any rough prompt and get a precision-engineered version back — structured to produce significantly better output from any LLM.",
   },
   {
     icon: ImageIcon,
-    title: "Visual Spellcaster",
-    desc: "Describe a scene or concept. Receive a structured prompt engineered to produce gallery-quality images from DALL·E, Midjourney, or Flux.",
+    title: "Image Prompt Builder",
+    desc: "Describe a concept and get a structured prompt engineered for gallery-quality results from DALL·E 3, Midjourney, or Flux.",
   },
   {
     icon: Sparkles,
-    title: "Skill Scroll Deployer",
-    desc: "Pre-forged instruction sets that summon Claude's full specialist potential for any domain. Drop in. Activate. Execute.",
+    title: "Claude Skills",
+    desc: "Pre-built instruction sets that turn Claude into a specialist for any domain. One slash command to activate. Ready to use immediately.",
   },
 ];
 
@@ -30,17 +30,17 @@ export const ToolsSection = () => {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-14 items-center">
           <div>
-            <p className="text-xs font-mono uppercase tracking-widest text-primary mb-4">Arcane Instruments</p>
+            <p className="text-xs font-mono uppercase tracking-widest text-primary mb-4">Built-in tools</p>
             <h2 className="text-4xl sm:text-5xl font-bold tracking-tight">
-              <span className="text-gradient">Sharper tools. </span>
-              <span className="text-gradient-primary">Deadlier spells.</span>
+              <span className="text-gradient">Sharper prompts. </span>
+              <span className="text-gradient-primary">Better results.</span>
             </h2>
             <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-              Every instrument in your forge has one purpose: make your prompts more powerful and your workflow faster. Built by practitioners, for practitioners.
+              Every tool inside PromptLand has one purpose: help you get more out of AI faster. Search smarter, enhance prompts instantly, and deploy specialist AI skills in seconds.
             </p>
             <Button asChild variant="hero" size="lg" className="mt-8">
               <a href="#pricing">
-                See the full arsenal
+                See everything included
                 <ArrowRight className="ml-1 h-4 w-4" />
               </a>
             </Button>
@@ -66,20 +66,20 @@ export const ToolsSection = () => {
         <div className="mt-16 glass rounded-3xl p-6 sm:p-8 max-w-4xl mx-auto">
           <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-muted-foreground mb-4">
             <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
-            {`// incantation_transmuter.live`}
+            {`// prompt_enhancer.live`}
           </div>
           <div className="grid md:grid-cols-2 gap-4">
             <div className="rounded-xl bg-secondary/60 border border-border p-5">
               <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-2">
-                input: raw_prompt
+                input: rough prompt
               </div>
-              <p className="text-sm text-foreground/60 font-mono">{">"} type your prompt here...</p>
+              <p className="text-sm text-foreground/60 font-mono">{">"} write a blog post about AI...</p>
             </div>
             <div className="rounded-xl bg-secondary/60 border border-primary/30 p-5 shadow-glow">
               <div className="text-[10px] font-mono uppercase tracking-widest text-primary mb-2">
-                output: transmuted ✦
+                output: enhanced ✦
               </div>
-              <p className="text-sm text-muted-foreground font-mono">{">"} engineered incantation awaits...</p>
+              <p className="text-sm text-muted-foreground font-mono">{">"} precision-engineered version ready...</p>
             </div>
           </div>
         </div>

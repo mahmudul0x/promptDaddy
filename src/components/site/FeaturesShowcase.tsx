@@ -596,7 +596,7 @@ export const FeaturesShowcase = () => {
         subtitle="expert you need."
         description="Claude Skills are pre-built instruction sets that transform Claude into a domain specialist — data analyst, copywriter, SEO strategist, and more. Activate with a slash command. Get expert output instantly."
         bullets={[
-          { icon: Bot, text: "100+ skills across business, marketing, tech, and creative domains" },
+          { icon: Bot, text: "600+ skills across business, marketing, tech, and creative domains" },
           { icon: Zap, text: "Activate with /skill-name — no complex setup required" },
           { icon: CheckCircle, text: "Each skill is tested and refined for maximum output quality" },
           { icon: Crown, text: "Exclusive skills not available anywhere else" },

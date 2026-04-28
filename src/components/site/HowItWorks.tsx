@@ -3,18 +3,18 @@ import { Calendar, Layers, Cpu } from "lucide-react";
 const steps = [
   {
     icon: Calendar,
-    title: "Fresh Spells Forged",
-    desc: "We track every model update, capability drop, and breakthrough technique. Your grimoire reflects what actually works right now — not six months ago.",
+    title: "New prompts every week",
+    desc: "We track every model update, capability release, and workflow breakthrough. Your library reflects what actually works right now — not what worked six months ago.",
   },
   {
     icon: Layers,
-    title: "New Grimoires Compiled",
-    desc: "A significant new AI tool emerges? We build an entire library around it before the crowd catches on. First-mover advantage, served on a silver platter.",
+    title: "New tools covered fast",
+    desc: "When a significant new AI tool or model drops, we build a dedicated resource set around it before the crowd catches on. Stay ahead without doing the research yourself.",
   },
   {
     icon: Cpu,
-    title: "Model Intel Updated",
-    desc: "Which LLM casts the strongest spell for your specific task today? The answer lives on your dashboard — recalibrated as the AI landscape shifts.",
+    title: "Model recommendations updated",
+    desc: "Which LLM performs best for your specific task this week? The answer is on your dashboard — updated as the AI landscape shifts so you always use the right tool.",
   },
 ];
 
@@ -23,10 +23,10 @@ export const HowItWorks = () => {
     <section className="relative py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto">
-          <p className="text-xs font-mono uppercase tracking-widest text-primary mb-4">The ritual</p>
-          <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gradient">Fresh spells. Every week.</h2>
+          <p className="text-xs font-mono uppercase tracking-widest text-primary mb-4">Always up to date</p>
+          <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gradient">Fresh content. Every week.</h2>
           <p className="mt-6 text-lg text-muted-foreground">
-            AI never sleeps, and neither does our content lab. New models surface? We've already cast them, documented the patterns, and pushed the spells to your vault.
+            AI moves fast — new models, new techniques, new tools your competitors are already using. PromptLand members always have the latest resources, updated every single week.
           </p>
         </div>
 
@@ -38,7 +38,7 @@ export const HowItWorks = () => {
                 <s.icon className="h-6 w-6" strokeWidth={2.5} />
               </div>
               <div className="mt-2 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
-                Ritual {i + 1}
+                Step {i + 1}
               </div>
               <h3 className="mt-2 text-xl font-semibold">{s.title}</h3>
               <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{s.desc}</p>

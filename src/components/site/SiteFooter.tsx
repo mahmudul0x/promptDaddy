@@ -12,7 +12,7 @@ export const SiteFooter = () => {
           <span className="font-semibold">PromptLand</span>
           <span className="text-sm text-muted-foreground">© {new Date().getFullYear()}</span>
         </div>
-        <p className="text-sm text-muted-foreground font-medium tracking-wide">CAST BETTER. CREATE MORE. BE LIMITLESS</p>
+        <p className="text-sm text-muted-foreground font-medium tracking-wide">PROMPT BETTER. CREATE FASTER. GROW MORE.</p>
         <nav className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
           <a href="#features" className="hover:text-foreground transition-colors">Features</a>
           <a href="#tools" className="hover:text-foreground transition-colors">Tools</a>

@@ -49,7 +49,7 @@ function UpgradeWall({ name, email, expired }: { name: string; email: string; ex
     if (data?.is_pro) {
       window.location.href = '/dashboard';
     } else {
-      setMsg('Not activated yet. Please wait a few more minutes.');
+      setMsg('Not activated yet. Our team is reviewing your payment — please check back shortly.');
     }
   };
 
@@ -91,9 +91,9 @@ function UpgradeWall({ name, email, expired }: { name: string; email: string; ex
           </h1>
           <p className="text-muted-foreground text-sm mb-8 leading-relaxed">
             {expired ? (
-              <>Your monthly subscription has expired.<br />Renew via bKash or Nagad - access restored within <strong className="text-foreground">1 minute</strong>.</>
+              <>Your monthly subscription has expired.<br />Renew via bKash or Nagad — access restored as soon as your payment is verified.</>
             ) : (
-              <>You're registered but haven't purchased a plan yet.<br />Buy a plan via bKash or Nagad - your account will be activated within <strong className="text-foreground">1 minute</strong>.</>
+              <>You're registered but haven't purchased a plan yet.<br />Buy a plan via bKash or Nagad — your account will be unlocked once your payment is verified.</>
             )}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -117,7 +117,7 @@ function UpgradeWall({ name, email, expired }: { name: string; email: string; ex
           </div>
           {msg && <p className="mt-4 text-xs text-muted-foreground bg-secondary/50 rounded-lg px-4 py-2">{msg}</p>}
           <p className="mt-5 text-[11px] text-muted-foreground/40">
-            Already paid? Click "Check Status" after 1 minute.
+            Already paid? Click "Check Status" to refresh your access.
           </p>
         </div>
       </div>

@@ -212,12 +212,12 @@ export const Hero = () => {
       {/* Content */}
       <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center" style={{ zIndex: 1 }}>
 
-        {/* Badge — animated gradient border + live counter */}
+        {/* Badge */}
         <div className="animate-fade-up inline-block" style={{ animationDelay: "0ms" }}>
           <div className="hero-badge-border">
             <div className="inline-flex items-center gap-2 glass rounded-full px-4 py-1.5 text-xs font-mono uppercase tracking-widest text-primary">
               <Sparkles className="h-3.5 w-3.5 animate-pulse" />
-              {count.toLocaleString()}+ prompt sorcerers initiated
+              {count.toLocaleString()}+ creators already inside
             </div>
           </div>
         </div>
@@ -226,8 +226,8 @@ export const Hero = () => {
           className="mt-8 text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] animate-fade-up"
           style={{ animationDelay: "160ms" }}
         >
-          <span className="text-gradient">Cast spells your competitors </span>
-          <span className="text-gradient-primary">haven&apos;t decoded yet.</span>
+          <span className="text-gradient">The AI prompt library </span>
+          <span className="text-gradient-primary">that actually saves you hours.</span>
         </h1>
 
         {/* Shimmer tagline */}
@@ -235,38 +235,67 @@ export const Hero = () => {
           className="mt-4 text-2xl sm:text-3xl font-bold tracking-wide animate-fade-up"
           style={{ animationDelay: "310ms" }}
         >
-          <span className="animate-shimmer-sweep">CAST BETTER. CREATE MORE. BE LIMITLESS.</span>
+          <span className="animate-shimmer-sweep">PROMPT BETTER. CREATE FASTER. GROW MORE.</span>
         </p>
 
         <p
           className="mt-7 text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed animate-fade-up"
           style={{ animationDelay: "450ms" }}
         >
-          1,000+ battle-tested prompt incantations, arcane tutorials, and automation rituals.
-          Forged for developers, founders, and digital sorcerers who refuse to fall behind.
+          1,000+ expert prompts, Claude Skills, image prompts & automation templates —
+          hand-tested for ChatGPT, Claude & Gemini. Get pro-level AI results from day one.
         </p>
 
+        {/* Social proof pills */}
         <div
-          className="mt-10 flex flex-col sm:flex-row gap-4 items-center justify-center animate-fade-up"
+          className="mt-6 flex flex-wrap items-center justify-center gap-3 animate-fade-up"
+          style={{ animationDelay: "520ms" }}
+        >
+          {[
+            { emoji: "⚡", text: "Save 5+ hours/week" },
+            { emoji: "✅", text: "Ready to copy-paste" },
+            { emoji: "🔄", text: "Updated weekly" },
+            { emoji: "🇧🇩", text: "Pay with bKash / Nagad" },
+          ].map((p) => (
+            <span
+              key={p.text}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary/60 border border-border/40 text-xs font-medium text-muted-foreground"
+            >
+              <span>{p.emoji}</span> {p.text}
+            </span>
+          ))}
+        </div>
+
+        <div
+          className="mt-8 flex flex-col sm:flex-row gap-4 items-center justify-center animate-fade-up"
           style={{ animationDelay: "590ms" }}
         >
-          {/* Primary CTA with expanding pulse ring */}
+          {/* Primary CTA */}
           <div className="relative">
             <span className="hero-cta-ring absolute inset-0" />
             <Button asChild variant="hero" size="xl">
               <Link to="/register">
-                Start Early Access for 119 BDT
+                Get Full Access — ৳119/month
                 <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>
           </div>
           <Button asChild variant="glass" size="xl">
-            <a href="#features">Explore the Grimoire</a>
+            <a href="#prompt-library">See what's inside</a>
           </Button>
         </div>
 
-        {/* Brand logos — staggered per-item */}
-        <div className="mt-14 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs font-mono uppercase tracking-widest text-muted-foreground">
+        {/* Trust line */}
+        <p
+          className="mt-4 text-xs text-muted-foreground/60 animate-fade-up"
+          style={{ animationDelay: "650ms" }}
+        >
+          No subscription traps. Cancel anytime. Instant access after payment.
+        </p>
+
+        {/* Works with */}
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs font-mono uppercase tracking-widest text-muted-foreground">
+          <span className="text-muted-foreground/40 mr-1">Works with →</span>
           {BRAND_TOOLS.map((tool, i) => (
             <span key={tool} className="inline-flex items-center gap-x-8">
               <span
