@@ -240,6 +240,7 @@ export default function AdminDashboard() {
 
   // ── ALL hooks declared unconditionally at the top ──
   const [adminList, setAdminList]         = useState<AdminEntry[]>([]);
+  const [adminListLoaded, setAdminListLoaded] = useState(false);
   const [tab, setTab]                     = useState<'overview' | 'payments' | 'users' | 'subscriptions' | 'trending' | 'admins'>('overview');
   const [requests, setRequests]           = useState<PaymentRequest[]>([]);
   const [users, setUsers]                 = useState<Profile[]>([]);
@@ -290,6 +291,8 @@ export default function AdminDashboard() {
     } catch (error) {
       console.error('Failed to fetch admin list:', error);
       setAdminList([]);
+    } finally {
+      setAdminListLoaded(true);
     }
   }, []);
 
@@ -340,12 +343,12 @@ export default function AdminDashboard() {
     }
   }, [user, loading, navigate]);
 
-  // Redirect non-admins after admin list loads
+  // Redirect non-admins after admin list loads from DB
   useEffect(() => {
-    if (adminList.length > 0 && !loading && !isAdmin) {
+    if (adminListLoaded && !loading && !isAdmin) {
       navigate('/');
     }
-  }, [adminList, loading, isAdmin, navigate]);
+  }, [adminListLoaded, loading, isAdmin, navigate]);
 
   // Initial data fetch
   useEffect(() => {

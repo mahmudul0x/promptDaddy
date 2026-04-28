@@ -3,12 +3,14 @@ import {
   MessageSquare, Image, Zap, Bot, Cpu, Video,
   GraduationCap, Wand2, Sparkles, Search, ArrowRight,
   BookOpen, Heart, TrendingUp, Flame, Newspaper, Star,
-  Crown, Infinity, BriefcaseBusiness, Lock,
+  Crown, Infinity, BriefcaseBusiness, Lock, Eye, Activity, Clock,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useFavorites } from '@/contexts/FavoritesContext';
 import { AnalyticsSection } from '@/components/dashboard/AnalyticsSection';
 import { useContentCounts } from '@/hooks/useData';
+import { useUserAnalytics } from '@/hooks/useAnalytics';
+import { formatDistanceToNow, parseISO } from 'date-fns';
 
 const STAT_DEFS = [
   { label: 'LLM Prompts', key: 'prompts' as const, icon: MessageSquare, to: '/dashboard/prompts', accent: '#60a5fa' },
@@ -197,6 +199,72 @@ function SectionHeading({ icon: Icon, label, sub }: { icon: React.ElementType; l
   );
 }
 
+const TYPE_EMOJI: Record<string, string> = {
+  llm_prompt: '💬', image_prompt: '🎨', claude_skill: '⚡',
+  claude_skill_bundle: '📦', guide: '📖', automation: '🔄',
+  custom_gpt: '🤖', video: '🎬',
+};
+
+function UserAnalytics({ userId }: { userId: string }) {
+  const { data, isLoading } = useUserAnalytics(userId);
+
+  if (isLoading) return (
+    <div className="rounded-2xl border border-border/40 bg-card/60 p-4 space-y-3">
+      {[1,2,3].map(i => <div key={i} className="h-7 rounded-lg bg-border/20 animate-pulse" />)}
+    </div>
+  );
+
+  if (!data) return null;
+
+  return (
+    <div className="rounded-2xl border border-border/40 bg-card/60 p-4 space-y-4">
+      {/* Stat pills */}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-secondary/40 border border-border/30">
+          <Eye style={{ height: 14, width: 14, color: '#60a5fa' }} />
+          <span className="text-xl font-black tabular-nums text-[#60a5fa]">{data.total_viewed.toLocaleString()}</span>
+          <span className="text-[10px] text-muted-foreground">Total viewed</span>
+        </div>
+        <div className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-secondary/40 border border-border/30">
+          <Activity style={{ height: 14, width: 14, color: '#a78bfa' }} />
+          <span className="text-xl font-black tabular-nums text-[#a78bfa]">{data.this_week.toLocaleString()}</span>
+          <span className="text-[10px] text-muted-foreground">This week</span>
+        </div>
+      </div>
+
+      {/* Top categories */}
+      {data.top_categories.length > 0 && (
+        <div className="space-y-2">
+          <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Your top categories</p>
+          {data.top_categories.map(c => (
+            <div key={c.category} className="flex items-center gap-2 text-xs">
+              <span className="truncate flex-1 text-foreground/80">{c.category}</span>
+              <span className="font-bold tabular-nums text-primary">{c.count}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Recently viewed */}
+      {data.recently_viewed.length > 0 && (
+        <div className="space-y-2">
+          <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Recently viewed</p>
+          {data.recently_viewed.map(r => (
+            <div key={r.prompt_id + r.viewed_at} className="flex items-center gap-2">
+              <span className="text-sm shrink-0">{TYPE_EMOJI[r.prompt_type] ?? '📄'}</span>
+              <span className="text-xs text-foreground/80 truncate flex-1">{r.prompt_title}</span>
+              <span className="text-[10px] text-muted-foreground/50 shrink-0 flex items-center gap-1">
+                <Clock style={{ height: 9, width: 9 }} />
+                {formatDistanceToNow(parseISO(r.viewed_at), { addSuffix: true })}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function DashboardHome() {
   const { user, subType, daysLeft } = useAuth();
   const { favorites } = useFavorites();
@@ -313,6 +381,14 @@ export default function DashboardHome() {
           ))}
         </div>
       </section>
+
+      {/* User personal analytics */}
+      {user && (
+        <section>
+          <SectionHeading icon={Activity} label="Your Activity" sub="Your personal usage stats" />
+          <UserAnalytics userId={user.id} />
+        </section>
+      )}
 
       {/* Live analytics */}
       <AnalyticsSection />

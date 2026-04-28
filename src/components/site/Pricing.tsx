@@ -235,15 +235,19 @@ function PaymentModal({ plan, onClose }: { plan: Plan; onClose: () => void }) {
   const [email,  setEmail]  = useState("");
   const [sender, setSender] = useState("");
   const [submitError, setSubmitError] = useState("");
+  const [pollCount, setPollCount] = useState(0);
 
-  // Poll every 5s after payment submitted — redirect to dashboard when admin approves
+  // Poll every 5s (max 60 attempts = 5 min) after payment submitted
+  // Cleanup runs on unmount so closing modal stops polling
   useEffect(() => {
     if (step !== "done") return;
-    const interval = setInterval(async () => {
+    if (pollCount >= 60) return;
+    const timer = setTimeout(async () => {
       await refreshProfile();
+      setPollCount(c => c + 1);
     }, 5000);
-    return () => clearInterval(interval);
-  }, [step, refreshProfile]);
+    return () => clearTimeout(timer);
+  }, [step, pollCount, refreshProfile]);
 
   useEffect(() => {
     if (isPro && step === "done") {
@@ -364,20 +368,37 @@ function PaymentModal({ plan, onClose }: { plan: Plan; onClose: () => void }) {
 
           {step === "done" && (
             <div className="text-center py-4">
-              <div className="h-14 w-14 rounded-full bg-green-500/15 flex items-center justify-center mx-auto mb-4">
-                <CheckCheck className="h-7 w-7 text-green-400" />
+              <div className="h-14 w-14 rounded-full bg-yellow-500/15 flex items-center justify-center mx-auto mb-4">
+                <CheckCheck className="h-7 w-7 text-yellow-400" />
               </div>
-              <h4 className="text-base font-bold text-foreground mb-2">Payment Submitted!</h4>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Your account will be activated within <strong className="text-foreground">1 minute</strong> after we verify your payment.
+              <h4 className="text-base font-bold text-foreground mb-1">Payment Under Review</h4>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-500/10 border border-yellow-500/20 mb-3">
+                <span className="h-1.5 w-1.5 rounded-full bg-yellow-400 animate-pulse" />
+                <span className="text-xs font-medium text-yellow-400">Pending approval</span>
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                Your payment info has been submitted. Our team will verify and activate your account — usually within <strong className="text-foreground">a few minutes</strong>.
               </p>
-              <div className="flex items-center justify-center gap-2 mt-4 text-xs text-muted-foreground/60">
-                <div className="h-3.5 w-3.5 rounded-full border-2 border-primary/50 border-t-primary animate-spin" />
-                Checking for approval…
+              <div className="rounded-xl bg-secondary/50 border border-border/50 px-4 py-3 text-left mb-4 space-y-1.5">
+                <p className="text-xs text-muted-foreground flex justify-between">
+                  <span>Plan</span><strong className="text-foreground">{plan.label}</strong>
+                </p>
+                <p className="text-xs text-muted-foreground flex justify-between">
+                  <span>Amount</span><strong className="text-foreground">৳{plan.price}</strong>
+                </p>
+                <p className="text-xs text-muted-foreground flex justify-between">
+                  <span>Status</span><strong className="text-yellow-400">Awaiting verification</strong>
+                </p>
               </div>
+              {pollCount < 60 && (
+                <div className="flex items-center justify-center gap-2 mb-3 text-xs text-muted-foreground/60">
+                  <div className="h-3 w-3 rounded-full border-2 border-primary/40 border-t-primary animate-spin" />
+                  Auto-checking for approval…
+                </div>
+              )}
               <button onClick={onClose}
-                className="mt-4 px-5 py-2 rounded-xl text-sm font-semibold border border-border hover:border-primary/40 text-muted-foreground hover:text-primary transition-all">
-                Close
+                className="w-full py-2.5 rounded-xl text-sm font-semibold border border-border hover:border-primary/40 text-muted-foreground hover:text-primary transition-all">
+                Close & wait for email
               </button>
             </div>
           )}

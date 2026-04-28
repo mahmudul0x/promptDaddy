@@ -23,8 +23,6 @@ export default function LlmPrompts() {
   const { user } = useAuth();
   const { data: prompts = [], isLoading } = usePrompts();
   
-  console.log('[LlmPrompts] prompts length:', prompts?.length, 'isLoading:', isLoading);
-  
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
   const [access, setAccess] = useState<AccessFilter>('All');
