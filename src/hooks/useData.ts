@@ -35,7 +35,7 @@ async function fetchAll<T>(table: string): Promise<T[]> {
       throw new Error(`${table}: ${error.message}`);
     }
     
-    console.log(`${table}: fetched ${data?.length || 0} rows, total count: ${count}, from: ${from}`);
+    
     
     if (!data || data.length === 0) break;
 
@@ -44,7 +44,6 @@ async function fetchAll<T>(table: string): Promise<T[]> {
     from += PAGE_SIZE;
   }
 
-  console.log(`${table}: total fetched ${results.length} rows`);
   return results;
 }
 
@@ -56,7 +55,7 @@ export const usePrompts = () =>
   useQuery<Prompt[]>({
     queryKey: ['prompts'],
     queryFn: () => fetchAll<Prompt>('prompts'),
-    staleTime: Infinity,
+    staleTime: 2 * 60 * 1000,
     refetchOnMount: 'always',
     retry: 3,
     refetchOnWindowFocus: false,
@@ -67,28 +66,28 @@ export const useImagePrompts = () =>
   useQuery<ImagePrompt[]>({
     queryKey: ['image_prompts'],
     queryFn: () => fetchAll<ImagePrompt>('image_prompts'),
-    staleTime: Infinity,
+    staleTime: 2 * 60 * 1000,
   });
 
 export const useVideos = () =>
   useQuery<Video[]>({
     queryKey: ['videos'],
     queryFn: () => fetchAll<Video>('videos'),
-    staleTime: Infinity,
+    staleTime: 2 * 60 * 1000,
   });
 
 export const useGuides = () =>
   useQuery<Guide[]>({
     queryKey: ['guides'],
     queryFn: () => fetchAll<Guide>('guides'),
-    staleTime: Infinity,
+    staleTime: 2 * 60 * 1000,
   });
 
 export const useTutorialResources = () =>
   useQuery<TutorialResourceItem[]>({
     queryKey: ['tutorial_resources'],
     queryFn: () => fetchAll<TutorialResourceItem>('tutorial_resources'),
-    staleTime: Infinity,
+    staleTime: 2 * 60 * 1000,
   });
 
 export const useAiStarterKit = () =>
@@ -102,28 +101,28 @@ export const useAiStarterKit = () =>
       ]);
       return { sections, prompts, claude_skills } as unknown as AiStarterKitData;
     },
-    staleTime: Infinity,
+    staleTime: 2 * 60 * 1000,
   });
 
 export const useCustomGpts = () =>
   useQuery<CustomGpt[]>({
     queryKey: ['custom_gpts'],
     queryFn: () => fetchAll<CustomGpt>('custom_gpts'),
-    staleTime: Infinity,
+    staleTime: 2 * 60 * 1000,
   });
 
 export const useAutomationTemplates = () =>
   useQuery<AutomationTemplate[]>({
     queryKey: ['automation_templates'],
     queryFn: () => fetchAll<AutomationTemplate>('automation_templates'),
-    staleTime: Infinity,
+    staleTime: 2 * 60 * 1000,
   });
 
 export const useClaudeSkills = () =>
   useQuery<ClaudeSkill[]>({
     queryKey: ['claude_skills'],
     queryFn: () => fetchAll<ClaudeSkill>('claude_skills'),
-    staleTime: Infinity,
+    staleTime: 2 * 60 * 1000,
   });
 
 export const useClaudeSkillBundle = () =>
@@ -136,7 +135,7 @@ export const useClaudeSkillBundle = () =>
         skills,
       } as unknown as ClaudeSkillBundle;
     },
-    staleTime: Infinity,
+    staleTime: 2 * 60 * 1000,
   });
 
 export const useAiModelRecommendations = () =>
@@ -182,6 +181,6 @@ export const useContentCounts = () =>
         claude_skills: claudeSkills.count || 0,
       };
     },
-    staleTime: Infinity,
+    staleTime: 2 * 60 * 1000,
   });
 
