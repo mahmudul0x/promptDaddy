@@ -308,3 +308,42 @@ export interface SearchResult {
   category: string;
   is_premium: boolean;
 }
+
+// ── New AI-generation prompt tables ──────────────────────────────────────────
+
+export interface GrokImaginePrompt {
+  id: number;
+  title: string;
+  description: string;
+  content: string;
+  sourceLink: string | null;
+  sourcePublishedAt: string | null;
+  author: { name: string; link: string } | null;
+  sourceMedia: string[] | null;
+  sourceReferenceImages: string[] | null;
+  sourceVideos: { url: string; thumbnail: string }[] | null;
+}
+
+export interface SeedancePrompt {
+  id: number;
+  title: string;
+  description: string;
+  content: string;
+  sourceLink: string | null;
+  sourcePublishedAt: string | null;
+  author: { name: string; link: string } | null;
+  sourceMedia: string[] | null;
+  sourceReferenceImages: string[] | null;
+  sourceVideos: { url: string; thumbnail: string }[] | null;
+}
+
+export interface NanoBananaPrompt {
+  id: number;
+  title: string;
+  description: string;
+  content: string;
+  sourceLink: string | null;
+  sourcePublishedAt: string | null;
+  author: { name: string; link: string } | null;
+  sourceMedia: string[] | null;
+}

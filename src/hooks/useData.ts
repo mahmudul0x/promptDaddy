@@ -6,6 +6,7 @@ import type {
   AiStarterKitData,
   CustomGpt, AutomationTemplate, ClaudeSkill, AiModelRecommendation,
   ClaudeSkillBundle,
+  GrokImaginePrompt, SeedancePrompt, NanoBananaPrompt,
 } from '@/data/types';
 
 // ─────────────────────────────────────────────
@@ -155,6 +156,27 @@ export const useAiModelRecommendations = () =>
     },
     staleTime: 5 * 60 * 1000,
     refetchInterval: 5 * 60 * 1000,
+  });
+
+export const useGrokImaginePrompts = () =>
+  useQuery<GrokImaginePrompt[]>({
+    queryKey: ['grok_imagine_prompts'],
+    queryFn: () => fetchAll<GrokImaginePrompt>('grok_imagine_prompts'),
+    staleTime: 5 * 60 * 1000,
+  });
+
+export const useSeedancePrompts = () =>
+  useQuery<SeedancePrompt[]>({
+    queryKey: ['seedance_prompts'],
+    queryFn: () => fetchAll<SeedancePrompt>('seedance_prompts'),
+    staleTime: 5 * 60 * 1000,
+  });
+
+export const useNanoBananaPrompts = () =>
+  useQuery<NanoBananaPrompt[]>({
+    queryKey: ['nano_banana_prompts'],
+    queryFn: () => fetchAll<NanoBananaPrompt>('nano_banana_prompts'),
+    staleTime: 5 * 60 * 1000,
   });
 
 export const useContentCounts = () =>
