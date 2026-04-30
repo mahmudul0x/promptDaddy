@@ -1,9 +1,95 @@
-import { useState, useMemo } from 'react';
-import { Sparkles, Copy, Check, X, ExternalLink, Search, SlidersHorizontal, Image, Video } from 'lucide-react';
+import { useState, useMemo, useRef, useEffect } from 'react';
+import { Sparkles, Copy, Check, X, ExternalLink, Search, Image, Video } from 'lucide-react';
 import { useGrokImaginePrompts } from '@/hooks/useData';
 import { PageHeader } from '@/components/dashboard/PageHeader';
 import type { GrokImaginePrompt } from '@/data/types';
 import { cn } from '@/lib/utils';
+
+/* ── JSON-string-safe coercions ─────────────────────────────────── */
+function parseField(v: unknown): unknown {
+  if (typeof v === 'string') {
+    try { return JSON.parse(v); } catch { return null; }
+  }
+  return v;
+}
+
+function toStrArr(v: unknown): string[] {
+  const parsed = parseField(v);
+  if (!parsed || !Array.isArray(parsed)) return [];
+  return parsed
+    .map((item: unknown) => {
+      if (typeof item === 'string') return item;
+      if (item && typeof item === 'object') {
+        const o = item as Record<string, unknown>;
+        return (o.url ?? o.src ?? o.image_url ?? '') as string;
+      }
+      return '';
+    })
+    .filter(Boolean);
+}
+
+function toVideoArr(v: unknown): { url: string; thumbnail: string | null }[] {
+  const parsed = parseField(v);
+  if (!parsed || !Array.isArray(parsed)) return [];
+  return parsed
+    .map((item: unknown) => {
+      if (typeof item === 'string') return { url: item, thumbnail: null };
+      if (item && typeof item === 'object') {
+        const o = item as Record<string, unknown>;
+        return {
+          url: (o.url ?? o.videoUrl ?? '') as string,
+          thumbnail: (o.thumbnail ?? o.thumbnailUrl ?? null) as string | null,
+        };
+      }
+      return null;
+    })
+    .filter((v): v is { url: string; thumbnail: string | null } => !!v && !!v.url);
+}
+
+function getImages(item: GrokImaginePrompt): string[] {
+  return [
+    ...toStrArr(item.sourceMedia),
+    ...toStrArr(item.sourceReferenceImages),
+  ];
+}
+function getVideos(item: GrokImaginePrompt) { return toVideoArr(item.sourceVideos); }
+
+function formatDate(s: string | null) {
+  if (!s) return null;
+  try { return new Date(s).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }); }
+  catch { return null; }
+}
+
+/* ── lazy image ─────────────────────────────────────────────────── */
+function LazyImg({ src, alt, className }: { src: string; alt: string; className?: string }) {
+  const ref = useRef<HTMLImageElement>(null);
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        el.src = src;
+        obs.disconnect();
+      }
+    }, { rootMargin: '200px' });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [src]);
+
+  if (error) return null;
+  return (
+    <img
+      ref={ref}
+      alt={alt}
+      className={cn(className, 'transition-opacity duration-300', loaded ? 'opacity-100' : 'opacity-0')}
+      onLoad={() => setLoaded(true)}
+      onError={() => setError(true)}
+    />
+  );
+}
 
 /* ── copy hook ─────────────────────────────────────────────────── */
 function useCopy(text: string, ms = 2000) {
@@ -17,97 +103,65 @@ function useCopy(text: string, ms = 2000) {
   return { copied, copy };
 }
 
-function CopyBtn({ text, className }: { text: string; className?: string }) {
-  const { copied, copy } = useCopy(text);
-  return (
-    <button
-      onClick={copy}
-      className={cn(
-        'flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1.5 rounded-lg transition-all',
-        copied
-          ? 'bg-green-500/20 text-green-400'
-          : 'bg-white/10 hover:bg-white/20 text-white/90',
-        className,
-      )}
-    >
-      {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
-      {copied ? 'Copied!' : 'Copy'}
-    </button>
-  );
-}
-
-/* ── helpers ────────────────────────────────────────────────────── */
-function getImages(item: GrokImaginePrompt): string[] {
-  const media = item.sourceMedia ?? [];
-  const refs = item.sourceReferenceImages ?? [];
-  return [...media, ...refs].filter(Boolean);
-}
-
-function getVideoThumb(item: GrokImaginePrompt): string | null {
-  return item.sourceVideos?.[0]?.thumbnail ?? null;
-}
-
-function formatDate(s: string | null) {
-  if (!s) return null;
-  return new Date(s).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+/* ── lazy card sentinel (loads next batch when visible) ─────────── */
+const BATCH = 24;
+function useLazyBatch(total: number) {
+  const [limit, setLimit] = useState(BATCH);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    setLimit(BATCH); // reset on list change
+  }, [total]);
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) setLimit(l => Math.min(l + BATCH, total));
+    }, { rootMargin: '300px' });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [total]);
+  return { limit, sentinelRef };
 }
 
 /* ── Detail Modal ───────────────────────────────────────────────── */
 function DetailModal({ item, onClose }: { item: GrokImaginePrompt; onClose: () => void }) {
-  const { copied, copy } = useCopy(item.content);
+  const { copied, copy } = useCopy(item.content ?? '');
   const images = getImages(item);
-  const videos = item.sourceVideos ?? [];
+  const videos = getVideos(item);
+
+  useEffect(() => {
+    const fn = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', fn);
+    return () => window.removeEventListener('keydown', fn);
+  }, [onClose]);
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6"
-      onClick={onClose}
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6" onClick={onClose}>
       <div className="absolute inset-0 bg-black/80 backdrop-blur-md" />
       <div
         className="relative z-10 w-full max-w-2xl flex flex-col rounded-2xl overflow-hidden"
-        style={{
-          maxHeight: 'calc(100vh - 48px)',
-          background: 'hsl(var(--card))',
-          border: '1px solid hsl(var(--border))',
-        }}
+        style={{ maxHeight: 'calc(100vh - 48px)', background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))' }}
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-start gap-4 px-6 py-5 border-b border-border/40 shrink-0">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap mb-2">
-              <span className="text-[10px] font-bold uppercase tracking-wider bg-cyan-500/15 text-cyan-400 px-2 py-0.5 rounded-full">
-                Grok Imagine
-              </span>
-              {item.author?.name && (
-                <span className="text-[10px] text-muted-foreground">by {item.author.name}</span>
-              )}
-              {formatDate(item.sourcePublishedAt) && (
-                <span className="text-[10px] text-muted-foreground/60">{formatDate(item.sourcePublishedAt)}</span>
-              )}
+              <span className="text-[10px] font-bold uppercase tracking-wider bg-cyan-500/15 text-cyan-400 px-2 py-0.5 rounded-full">Grok Imagine</span>
+              {item.author?.name && <span className="text-[10px] text-muted-foreground">by {item.author.name}</span>}
+              {formatDate(item.sourcePublishedAt) && <span className="text-[10px] text-muted-foreground/60">{formatDate(item.sourcePublishedAt)}</span>}
             </div>
             <h2 className="font-bold text-base text-foreground leading-snug">{item.title}</h2>
-            {item.description && (
-              <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{item.description}</p>
-            )}
+            {item.description && <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{item.description}</p>}
           </div>
           <div className="flex items-center gap-2 shrink-0">
             {item.sourceLink && (
-              <a
-                href={item.sourceLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={e => e.stopPropagation()}
-                className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
-              >
+              <a href={item.sourceLink} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}
+                className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors">
                 <ExternalLink className="h-4 w-4" />
               </a>
             )}
-            <button
-              onClick={onClose}
-              className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
-            >
+            <button onClick={onClose} className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors">
               <X className="h-4 w-4" />
             </button>
           </div>
@@ -115,73 +169,45 @@ function DetailModal({ item, onClose }: { item: GrokImaginePrompt; onClose: () =
 
         {/* Body */}
         <div className="flex-1 overflow-y-auto custom-scroll p-6 flex flex-col gap-5">
-          {/* Prompt text */}
           <div>
             <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/50 mb-2">Prompt</p>
-            <div
-              className="text-sm text-foreground/85 leading-relaxed rounded-xl p-4 font-mono whitespace-pre-wrap"
-              style={{ background: 'hsl(var(--secondary))', border: '1px solid hsl(var(--border))' }}
-            >
+            <div className="text-sm text-foreground/85 leading-relaxed rounded-xl p-4 font-mono whitespace-pre-wrap"
+              style={{ background: 'hsl(var(--secondary))', border: '1px solid hsl(var(--border))' }}>
               {item.content}
             </div>
-            <button
-              onClick={copy}
-              className={cn(
-                'mt-3 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all',
-                copied
-                  ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                  : 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/25',
-              )}
-            >
+            <button onClick={copy}
+              className={cn('mt-3 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all',
+                copied ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/25')}>
               {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               {copied ? 'Copied!' : 'Copy Prompt'}
             </button>
           </div>
 
-          {/* Images */}
           {images.length > 0 && (
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/50 mb-2">
-                Media ({images.length})
-              </p>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/50 mb-2">Media ({images.length})</p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {images.map((url, i) => (
-                  <a key={i} href={url} target="_blank" rel="noopener noreferrer">
-                    <img
-                      src={url}
-                      alt=""
-                      loading="lazy"
-                      className="w-full rounded-lg object-cover aspect-square hover:opacity-80 transition-opacity"
-                      onError={e => { (e.currentTarget.closest('a') as HTMLElement).style.display = 'none'; }}
-                    />
+                  <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="block aspect-square rounded-lg overflow-hidden bg-secondary/30">
+                    <LazyImg src={url} alt="" className="w-full h-full object-cover hover:opacity-80" />
                   </a>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Videos */}
           {videos.length > 0 && (
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/50 mb-2">
-                Videos ({videos.length})
-              </p>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/50 mb-2">Videos ({videos.length})</p>
               <div className="flex flex-col gap-2">
                 {videos.map((v, i) => (
-                  <a
-                    key={i}
-                    href={v.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-3 rounded-xl border border-border/40 hover:border-border/70 hover:bg-white/[0.02] transition-all"
-                  >
-                    {v.thumbnail ? (
-                      <img src={v.thumbnail} alt="" className="h-12 w-20 object-cover rounded-lg shrink-0" />
-                    ) : (
-                      <div className="h-12 w-20 rounded-lg bg-secondary/50 flex items-center justify-center shrink-0">
-                        <Video className="h-5 w-5 text-muted-foreground/40" />
-                      </div>
-                    )}
+                  <a key={i} href={v.url} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center gap-3 p-3 rounded-xl border border-border/40 hover:border-border/70 hover:bg-white/[0.02] transition-all">
+                    <div className="h-12 w-20 rounded-lg bg-secondary/50 overflow-hidden shrink-0 flex items-center justify-center">
+                      {v.thumbnail
+                        ? <LazyImg src={v.thumbnail} alt="" className="w-full h-full object-cover" />
+                        : <Video className="h-5 w-5 text-muted-foreground/40" />}
+                    </div>
                     <span className="text-xs text-muted-foreground truncate flex-1">Video {i + 1}</span>
                     <ExternalLink className="h-3.5 w-3.5 text-muted-foreground/50 shrink-0" />
                   </a>
@@ -198,42 +224,29 @@ function DetailModal({ item, onClose }: { item: GrokImaginePrompt; onClose: () =
 /* ── Card ───────────────────────────────────────────────────────── */
 function PromptCard({ item, onClick }: { item: GrokImaginePrompt; onClick: () => void }) {
   const images = getImages(item);
-  const videoThumb = getVideoThumb(item);
-  const thumb = images[0] ?? videoThumb;
-  const hasVideo = (item.sourceVideos?.length ?? 0) > 0;
+  const videos = getVideos(item);
+  const thumb = images[0] ?? videos[0]?.thumbnail ?? null;
+  const { copied, copy } = useCopy(item.content ?? '');
 
   return (
     <div
       onClick={onClick}
       className="group relative flex flex-col rounded-2xl overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-0.5"
-      style={{
-        background: 'hsl(var(--card))',
-        border: '1px solid hsl(var(--border))',
-        boxShadow: '0 2px 12px hsl(var(--shadow-card, 230 50% 2% / 0.4))',
-      }}
+      style={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', boxShadow: '0 2px 12px hsl(var(--shadow-card, 230 50% 2% / 0.4))' }}
       onMouseEnter={e => (e.currentTarget.style.borderColor = 'hsl(var(--primary) / 0.3)')}
       onMouseLeave={e => (e.currentTarget.style.borderColor = 'hsl(var(--border))')}
     >
-      {/* Thumbnail */}
-      <div className="relative w-full overflow-hidden bg-secondary/30" style={{ aspectRatio: '16/9' }}>
+      <div className="relative w-full bg-secondary/30" style={{ aspectRatio: '16/9' }}>
         {thumb ? (
-          <img
-            src={thumb}
-            alt={item.title}
-            loading="lazy"
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
-          />
+          <LazyImg src={thumb} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
             <Sparkles className="h-8 w-8 text-cyan-400/20" />
           </div>
         )}
         <div className="absolute top-2 left-2 flex items-center gap-1">
-          <span className="bg-black/70 backdrop-blur-sm text-[10px] font-bold text-cyan-400 px-2 py-0.5 rounded-full">
-            Grok
-          </span>
-          {hasVideo && (
+          <span className="bg-black/70 backdrop-blur-sm text-[10px] font-bold text-cyan-400 px-2 py-0.5 rounded-full">Grok</span>
+          {videos.length > 0 && (
             <span className="bg-black/70 backdrop-blur-sm text-[10px] font-medium text-white/70 px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
               <Video className="h-2.5 w-2.5" /> Video
             </span>
@@ -246,26 +259,22 @@ function PromptCard({ item, onClick }: { item: GrokImaginePrompt; onClick: () =>
         )}
       </div>
 
-      {/* Body */}
       <div className="flex flex-col gap-2 p-3.5 flex-1">
-        <h3 className="text-[13px] font-semibold text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors">
-          {item.title}
-        </h3>
-        {item.description && (
-          <p className="text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">{item.description}</p>
-        )}
-        <p className="text-[11px] text-muted-foreground/60 line-clamp-2 leading-relaxed font-mono mt-0.5">
-          {item.content}
-        </p>
+        <h3 className="text-[13px] font-semibold text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors">{item.title}</h3>
+        {item.description && <p className="text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">{item.description}</p>}
+        <p className="text-[11px] text-muted-foreground/60 line-clamp-2 leading-relaxed font-mono mt-0.5">{item.content}</p>
         <div className="flex items-center justify-between mt-auto pt-2 border-t border-white/5">
-          {item.author?.name ? (
-            <span className="text-[10px] text-muted-foreground/50 truncate">{item.author.name}</span>
-          ) : (
-            <span className="text-[10px] text-muted-foreground/30">—</span>
-          )}
-          {formatDate(item.sourcePublishedAt) && (
-            <span className="text-[10px] text-muted-foreground/40">{formatDate(item.sourcePublishedAt)}</span>
-          )}
+          <span className="text-[10px] text-muted-foreground/50 truncate">{item.author?.name ?? '—'}</span>
+          <button
+            onClick={copy}
+            className={cn(
+              'flex items-center gap-1 text-[11px] font-medium px-2 py-1 rounded-lg transition-all shrink-0',
+              copied ? 'bg-green-500/15 text-green-400' : 'bg-white/[0.05] text-muted-foreground hover:bg-cyan-500/15 hover:text-cyan-400',
+            )}
+          >
+            {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+            {copied ? 'Copied' : 'Copy'}
+          </button>
         </div>
       </div>
     </div>
@@ -275,107 +284,108 @@ function PromptCard({ item, onClick }: { item: GrokImaginePrompt; onClick: () =>
 /* ── Page ───────────────────────────────────────────────────────── */
 type SortOpt = 'newest' | 'oldest';
 
+const GROK_CATEGORIES = [
+  'All',
+  'Cinematic Scene Showcase',
+  'Vlog / Social Lifestyle',
+  'Short Film',
+  'Music Video',
+  'Brand / Product Commercial',
+  'UGC / Talking Head Ad',
+  'Explainer / Tutorial',
+  'Channel Intro / Brand Asset',
+  'Game Cinematic / PV',
+] as const;
+
 export default function GrokImaginePrompts() {
   const { data: items = [], isLoading } = useGrokImaginePrompts();
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState<SortOpt>('newest');
   const [mediaOnly, setMediaOnly] = useState(false);
   const [videoOnly, setVideoOnly] = useState(false);
+  const [category, setCategory] = useState('All');
   const [selected, setSelected] = useState<GrokImaginePrompt | null>(null);
 
   const filtered = useMemo(() => {
     let list = items;
-    if (mediaOnly) list = list.filter(i => (getImages(i).length > 0));
-    if (videoOnly) list = list.filter(i => (i.sourceVideos?.length ?? 0) > 0);
+    if (mediaOnly) list = list.filter(i => getImages(i).length > 0);
+    if (videoOnly) list = list.filter(i => getVideos(i).length > 0);
+    if (category !== 'All') {
+      list = list.filter(i => i.category === category);
+    }
     if (search.trim()) {
       const q = search.toLowerCase();
       list = list.filter(i =>
-        i.title.toLowerCase().includes(q) ||
-        i.content.toLowerCase().includes(q) ||
-        i.description?.toLowerCase().includes(q),
+        (i.title ?? '').toLowerCase().includes(q) ||
+        (i.content ?? '').toLowerCase().includes(q) ||
+        (i.description ?? '').toLowerCase().includes(q),
       );
     }
     const sorted = [...list];
     if (sort === 'newest') sorted.sort((a, b) => (b.sourcePublishedAt ?? '').localeCompare(a.sourcePublishedAt ?? ''));
     else sorted.sort((a, b) => (a.sourcePublishedAt ?? '').localeCompare(b.sourcePublishedAt ?? ''));
     return sorted;
-  }, [items, search, sort, mediaOnly, videoOnly]);
+  }, [items, search, sort, mediaOnly, videoOnly, category]);
 
-  const activeFilterCount = (mediaOnly ? 1 : 0) + (videoOnly ? 1 : 0);
+  const { limit, sentinelRef } = useLazyBatch(filtered.length);
+  const visible = filtered.slice(0, limit);
 
   return (
     <div className="max-w-7xl mx-auto">
-      <PageHeader
-        icon={Sparkles}
-        title="Grok Imagine Prompts"
-        description="Image generation prompts curated from X (Twitter) — sourced from Grok Imagine."
-        count={items.length}
-        iconColor="text-cyan-400"
-      />
+      <PageHeader icon={Sparkles} title="Grok Imagine Prompts"
+        description="Curated image & video generation prompts sourced from Grok Imagine."
+        count={items.length} iconColor="text-cyan-400" />
 
-      {/* Search + filter bar */}
+      {/* Category chips */}
+      <div className="flex items-center gap-2 mb-4 overflow-x-auto no-scrollbar pb-1">
+        {GROK_CATEGORIES.map(cat => (
+          <button
+            key={cat}
+            onClick={() => setCategory(cat)}
+            className={cn(
+              'shrink-0 text-[12px] font-medium px-3.5 py-1.5 rounded-lg border transition-all',
+              category === cat
+                ? 'bg-cyan-500/15 text-cyan-400 border-cyan-500/35'
+                : 'text-muted-foreground border-border/40 hover:text-foreground hover:border-border/70',
+            )}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
       <div className="flex items-center gap-3 mb-6 flex-wrap">
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/50 pointer-events-none" />
-          <input
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Search prompts…"
-            className="w-full h-10 pl-9 pr-4 rounded-xl border border-border/35 bg-white/[0.03] text-[13px] text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-border/60 focus:bg-white/[0.05] transition-all"
-          />
-          {search && (
-            <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-foreground">
-              <X className="h-3.5 w-3.5" />
-            </button>
-          )}
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search prompts…"
+            className="w-full h-10 pl-9 pr-4 rounded-xl border border-border/35 bg-white/[0.03] text-[13px] text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-border/60 transition-all" />
+          {search && <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-foreground"><X className="h-3.5 w-3.5" /></button>}
         </div>
 
-        {/* Sort */}
-        <select
-          value={sort}
-          onChange={e => setSort(e.target.value as SortOpt)}
-          className="h-10 px-3 rounded-xl border border-border/35 bg-white/[0.03] text-[13px] text-foreground focus:outline-none focus:border-border/60 transition-all cursor-pointer"
-        >
+        <select value={sort} onChange={e => setSort(e.target.value as SortOpt)}
+          className="h-10 px-3 rounded-xl border border-border/35 bg-white/[0.03] text-[13px] text-foreground focus:outline-none focus:border-border/60 transition-all cursor-pointer">
           <option value="newest">Newest</option>
           <option value="oldest">Oldest</option>
         </select>
 
-        {/* Quick filter chips */}
-        <button
-          onClick={() => setMediaOnly(v => !v)}
-          className={cn(
-            'flex items-center gap-1.5 h-10 px-3.5 rounded-xl border text-[12px] font-medium transition-all',
-            mediaOnly
-              ? 'bg-cyan-500/15 border-cyan-500/35 text-cyan-400'
-              : 'bg-white/[0.03] border-border/35 text-muted-foreground hover:text-foreground hover:border-border/50',
-          )}
-        >
+        <button onClick={() => setMediaOnly(v => !v)}
+          className={cn('flex items-center gap-1.5 h-10 px-3.5 rounded-xl border text-[12px] font-medium transition-all',
+            mediaOnly ? 'bg-cyan-500/15 border-cyan-500/35 text-cyan-400' : 'bg-white/[0.03] border-border/35 text-muted-foreground hover:text-foreground hover:border-border/50')}>
           <Image className="h-3.5 w-3.5" /> With Media
         </button>
-        <button
-          onClick={() => setVideoOnly(v => !v)}
-          className={cn(
-            'flex items-center gap-1.5 h-10 px-3.5 rounded-xl border text-[12px] font-medium transition-all',
-            videoOnly
-              ? 'bg-purple-500/15 border-purple-500/35 text-purple-400'
-              : 'bg-white/[0.03] border-border/35 text-muted-foreground hover:text-foreground hover:border-border/50',
-          )}
-        >
+        <button onClick={() => setVideoOnly(v => !v)}
+          className={cn('flex items-center gap-1.5 h-10 px-3.5 rounded-xl border text-[12px] font-medium transition-all',
+            videoOnly ? 'bg-purple-500/15 border-purple-500/35 text-purple-400' : 'bg-white/[0.03] border-border/35 text-muted-foreground hover:text-foreground hover:border-border/50')}>
           <Video className="h-3.5 w-3.5" /> With Video
         </button>
 
-        {activeFilterCount > 0 && (
-          <button
-            onClick={() => { setMediaOnly(false); setVideoOnly(false); }}
-            className="h-10 px-3 rounded-xl text-[12px] text-red-400/80 hover:text-red-400 border border-red-500/20 hover:border-red-500/40 transition-all"
-          >
+        {(mediaOnly || videoOnly) && (
+          <button onClick={() => { setMediaOnly(false); setVideoOnly(false); }}
+            className="h-10 px-3 rounded-xl text-[12px] text-red-400/80 hover:text-red-400 border border-red-500/20 hover:border-red-500/40 transition-all">
             Clear
           </button>
         )}
-
-        <span className="text-[12px] text-muted-foreground/50 ml-auto whitespace-nowrap">
-          {filtered.length} / {items.length}
-        </span>
+        <span className="text-[12px] text-muted-foreground/50 ml-auto whitespace-nowrap">{filtered.length} / {items.length}</span>
       </div>
 
       {isLoading ? (
@@ -391,11 +401,21 @@ export default function GrokImaginePrompts() {
           <p className="text-sm text-muted-foreground">Try a different search or filter.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {filtered.map(item => (
-            <PromptCard key={item.id} item={item} onClick={() => setSelected(item)} />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {visible.map(item => (
+              <PromptCard key={item.id} item={item} onClick={() => setSelected(item)} />
+            ))}
+          </div>
+          {limit < filtered.length && (
+            <div ref={sentinelRef} className="flex justify-center py-10">
+              <div className="flex items-center gap-2 text-[12px] text-muted-foreground/50">
+                <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/30 border-t-primary animate-spin" />
+                Loading more…
+              </div>
+            </div>
+          )}
+        </>
       )}
 
       {selected && <DetailModal item={selected} onClose={() => setSelected(null)} />}

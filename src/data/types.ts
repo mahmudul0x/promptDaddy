@@ -316,6 +316,7 @@ export interface GrokImaginePrompt {
   title: string;
   description: string;
   content: string;
+  category: string | null;
   sourceLink: string | null;
   sourcePublishedAt: string | null;
   author: { name: string; link: string } | null;
@@ -329,6 +330,7 @@ export interface SeedancePrompt {
   title: string;
   description: string;
   content: string;
+  category: string | null;
   sourceLink: string | null;
   sourcePublishedAt: string | null;
   author: { name: string; link: string } | null;
@@ -342,6 +344,7 @@ export interface NanoBananaPrompt {
   title: string;
   description: string;
   content: string;
+  category: string | null;
   sourceLink: string | null;
   sourcePublishedAt: string | null;
   author: { name: string; link: string } | null;
