@@ -915,13 +915,14 @@ export default function AdminDashboard() {
     return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
   })();
 
-  const tabs = [
-    { id: 'overview',       label: 'Overview',       icon: LayoutDashboard, badge: undefined },
-    { id: 'payments',       label: 'Payments',        icon: CreditCard,      badge: pendingReqs.length || undefined },
-    { id: 'users',          label: 'Users',           icon: Users,           badge: undefined },
-    { id: 'subscriptions',  label: 'Subscriptions',   icon: Crown,           badge: expiringSoon.length || undefined },
-    { id: 'trending',       label: 'Trending',        icon: Flame,           badge: undefined },
-    { id: 'admins',         label: 'Admins',          icon: Shield,          badge: undefined },
+const tabs = [
+    { id: 'overview',      label: 'Overview',      icon: LayoutDashboard, badge: undefined },
+    { id: 'payments',    label: 'Payments',   icon: CreditCard,    badge: pendingReqs.length || undefined },
+    { id: 'users',       label: 'Users',        icon: Users,         badge: undefined },
+    { id: 'subscriptions', label: 'Subscriptions', icon: Crown, badge: expiringSoon.length || undefined },
+    { id: 'trending',    label: 'Trending',   icon: Flame,        badge: undefined },
+    { id: 'admins',     label: 'Admins',      icon: Shield,       badge: undefined },
+    { id: 'demo-prompts',label: 'Demo Prompts', icon: Sparkles,     badge: undefined, url: '/admin/demo-prompts' },
   ] as const;
 
   return (
@@ -1042,7 +1043,9 @@ export default function AdminDashboard() {
 
         <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
           {tabs.map(t => (
-            <button key={t.id} onClick={() => setTab(t.id)}
+            <button 
+              key={t.id} 
+              onClick={() => t.url ? window.location.href = t.url : setTab(t.id)}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
                 tab === t.id 
                   ? 'bg-gradient-to-r from-violet-500/20 to-purple-500/20 text-white border border-violet-500/30' 
