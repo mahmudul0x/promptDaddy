@@ -228,10 +228,10 @@ function FloatCard({
 
 /* ─── Stats counter strip ─── */
 const STATS = [
-  { value: "1,000+", label: "AI Prompts" },
-  { value: "600+",   label: "Claude Skills" },
-  { value: "500+",   label: "Image Prompts" },
-  { value: "Weekly", label: "New Content" },
+  { value: "19,000+", label: "AI Prompts" },
+  { value: "500+",    label: "Claude Skills" },
+  { value: "17,000+", label: "Image Prompts" },
+  { value: "Weekly",  label: "New Content" },
 ];
 
 /* ─── Main pills ─── */
@@ -340,19 +340,19 @@ export const IntroSection = () => {
         <div className="relative z-10 mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-center">
 
           {/* Heading */}
-          <h1 className="intro-heading text-4xl sm:text-5xl lg:text-[3.6rem] font-black tracking-tight leading-[1.1]">
-            <span
-              style={{
-                background: "var(--gradient-text)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            >
-              Get real results
-            </span>
-            <span className="block text-foreground mt-1">with AI — from day one.</span>
-          </h1>
+<h1 className="intro-heading text-4xl sm:text-5xl lg:text-[3.6rem] font-black tracking-tight leading-[1.1] -mt-6">
+              <span
+                style={{
+                  background: "var(--gradient-text)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
+                Get real results
+              </span>
+              <span className="block text-foreground mt-1">with AI — from day one.</span>
+            </h1>
 
           {/* Typewriter terminal box */}
           <div className="intro-typewriter mt-7 mx-auto max-w-xl">
@@ -416,7 +416,7 @@ export const IntroSection = () => {
               </div>
             </div>
             <p className="mt-2 text-[10px] text-muted-foreground/40 font-mono text-center">
-              1,000+ expert prompts ready to use — just copy &amp; paste
+              19,000+ expert prompts ready to use — just copy & paste
             </p>
           </div>
 
@@ -476,7 +476,7 @@ export const IntroSection = () => {
           </div>
 
           <p className="mt-2.5 text-xs text-muted-foreground/40">
-            No traps · Cancel anytime · Instant access after payment
+            No traps · Instant access after payment
           </p>
 
           {/* Works with */}
