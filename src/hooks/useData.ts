@@ -6,7 +6,7 @@ import type {
   AiStarterKitData,
   CustomGpt, AutomationTemplate, ClaudeSkill, AiModelRecommendation,
   ClaudeSkillBundle,
-  GrokImaginePrompt, SeedancePrompt, NanoBananaPrompt,
+  GrokImaginePrompt, SeedancePrompt, NanoBananaPrompt, GptImagePrompt,
 } from '@/data/types';
 
 // ─────────────────────────────────────────────
@@ -179,11 +179,18 @@ export const useNanoBananaPrompts = () =>
     staleTime: 10 * 60 * 1000,
   });
 
+export const useGptImagePrompts = () =>
+  useQuery<GptImagePrompt[]>({
+    queryKey: ['gptimage_prompts'],
+    queryFn: () => fetchAll<GptImagePrompt>('gptimage_prompts'),
+    staleTime: 10 * 60 * 1000,
+  });
+
 export const useContentCounts = () =>
   useQuery<Record<string, number>>({
     queryKey: ['content_counts'],
     queryFn: async () => {
-      const [prompts, imagePrompts, videos, guides, customGpts, automationTemplates, claudeSkills] =
+      const [prompts, imagePrompts, videos, guides, customGpts, automationTemplates, claudeSkills, gptimagePrompts, grokImaginePrompts, nanoBananaPrompts, seedancePrompts, aiStarterKitPrompts, aiStarterKitSkills] =
         await Promise.all([
           dataSupabase.from('prompts').select('id', { count: 'exact', head: true }),
           dataSupabase.from('image_prompts').select('id', { count: 'exact', head: true }),
@@ -192,6 +199,12 @@ export const useContentCounts = () =>
           dataSupabase.from('custom_gpts').select('id', { count: 'exact', head: true }),
           dataSupabase.from('automation_templates').select('id', { count: 'exact', head: true }),
           dataSupabase.from('claude_skills').select('id', { count: 'exact', head: true }),
+          dataSupabase.from('gptimage_prompts').select('id', { count: 'exact', head: true }),
+          dataSupabase.from('grok_imagine_prompts').select('id', { count: 'exact', head: true }),
+          dataSupabase.from('nano_banana_prompts').select('id', { count: 'exact', head: true }),
+          dataSupabase.from('seedance_prompts').select('id', { count: 'exact', head: true }),
+          dataSupabase.from('ai_starter_kit_prompts').select('id', { count: 'exact', head: true }),
+          dataSupabase.from('ai_starter_kit_skills').select('id', { count: 'exact', head: true }),
         ]);
       return {
         prompts: prompts.count || 0,
@@ -201,6 +214,12 @@ export const useContentCounts = () =>
         custom_gpts: customGpts.count || 0,
         automation_templates: automationTemplates.count || 0,
         claude_skills: claudeSkills.count || 0,
+        gptimage_prompts: gptimagePrompts.count || 0,
+        grok_imagine_prompts: grokImaginePrompts.count || 0,
+        nano_banana_prompts: nanoBananaPrompts.count || 0,
+        seedance_prompts: seedancePrompts.count || 0,
+        ai_starter_kit_prompts: aiStarterKitPrompts.count || 0,
+        ai_starter_kit_skills: aiStarterKitSkills.count || 0,
       };
     },
     staleTime: 2 * 60 * 1000,

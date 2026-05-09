@@ -3,7 +3,7 @@ import {
   LayoutDashboard, MessageSquare, Image,
   Video, BookOpen, GraduationCap, Bot, Cpu, Heart, Newspaper, Star, BriefcaseBusiness,
   LogOut, Sparkles as BrandIcon, UserCircle, Crown, Package, Flame, Lock,
-  Sparkles, Film, Banana,
+  Sparkles, Film, Banana, Wand2,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useFavorites } from '@/contexts/FavoritesContext';
@@ -27,6 +27,7 @@ const NAV = [
       { to: '/dashboard/grok-imagine',       icon: Sparkles,      label: 'Grok Imagine',     pro: true },
       { to: '/dashboard/seedance',           icon: Film,          label: 'Seedance Prompts', pro: true },
       { to: '/dashboard/nano-banana',        icon: Banana,        label: 'Nano Banana',      pro: true },
+      { to: '/dashboard/gptimage',            icon: Wand2,         label: 'GPT Image',        pro: true },
     ],
   },
   {

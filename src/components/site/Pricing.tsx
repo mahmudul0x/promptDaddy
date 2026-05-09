@@ -1,7 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Check, ArrowRight, Zap, Infinity, X, Copy, CheckCheck, ChevronLeft, Eye, EyeOff } from "lucide-react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const SUPABASE_URL  = import.meta.env.VITE_SUPABASE_URL as string;
 const SUPABASE_ANON = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
@@ -411,9 +415,32 @@ function PaymentModal({ plan, onClose }: { plan: Plan; onClose: () => void }) {
 /* ── Pricing Section ─────────────────────────────────────── */
 export const Pricing = () => {
   const { isAuthenticated } = useAuth();
+  const sectionRef = useRef<HTMLElement>(null);
 
   const [activePlan,   setActivePlan]   = useState<PlanKey | null>(null);
   const [authGatePlan, setAuthGatePlan] = useState<PlanKey | null>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        ".pricing-heading",
+        { opacity: 0, y: 28 },
+        {
+          opacity: 1, y: 0, duration: 0.65,
+          scrollTrigger: { trigger: ".pricing-heading", start: "top 85%", once: true },
+        }
+      );
+      gsap.fromTo(
+        ".pricing-card",
+        { opacity: 0, y: 40, scale: 0.97 },
+        {
+          opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.12, ease: "power2.out",
+          scrollTrigger: { trigger: ".pricing-cards", start: "top 80%", once: true },
+        }
+      );
+    }, sectionRef);
+    return () => ctx.revert();
+  }, []);
 
   // After Google OAuth redirect, auto-open the pending plan modal
   useEffect(() => {
@@ -435,7 +462,7 @@ export const Pricing = () => {
   };
 
   return (
-    <section id="pricing" className="relative py-24 sm:py-32">
+    <section id="pricing" ref={sectionRef} className="relative py-20 sm:py-28 border-t border-border/30">
       <div className="absolute inset-0 -z-10 bg-gradient-hero opacity-60" />
 
       {/* Auth gate — shown when user is not logged in */}
@@ -458,19 +485,19 @@ export const Pricing = () => {
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
 
         {/* Heading */}
-        <div className="text-center max-w-xl mx-auto mb-16">
+        <div className="pricing-heading text-center max-w-xl mx-auto mb-12">
           <p className="text-xs font-mono uppercase tracking-widest text-primary mb-3">Pricing</p>
-          <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gradient">Simple, honest pricing.</h2>
-          <p className="mt-4 text-base text-muted-foreground">
+          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-gradient">Simple, honest pricing.</h2>
+          <p className="mt-3 text-sm text-muted-foreground">
             Choose monthly or pay once and own it forever.
           </p>
         </div>
 
         {/* Cards */}
-        <div className="grid sm:grid-cols-2 gap-5 items-stretch">
+        <div className="pricing-cards grid sm:grid-cols-2 gap-5 items-stretch">
 
           {/* Monthly */}
-          <div className="rounded-2xl border border-border/60 bg-card/60 p-7 flex flex-col gap-6">
+          <div className="pricing-card rounded-2xl border border-border/60 bg-card/60 p-7 flex flex-col gap-6">
             <div>
               <span className="inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-widest text-muted-foreground border border-border rounded-full px-2.5 py-1 mb-4">
                 <Zap className="h-2.5 w-2.5" /> Monthly
@@ -497,7 +524,7 @@ export const Pricing = () => {
           </div>
 
           {/* Lifetime */}
-          <div className="relative rounded-2xl p-px overflow-visible" style={{ background: "var(--gradient-primary)" }}>
+          <div className="pricing-card relative rounded-2xl p-px overflow-visible" style={{ background: "var(--gradient-primary)" }}>
             <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
               <span className="text-[10px] font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full shadow-glow whitespace-nowrap"
                 style={{ background: "var(--gradient-primary)", color: "hsl(var(--primary-foreground))" }}>

@@ -1,4 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 import { CheckCircle, Mail, MessageSquare, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,12 +10,27 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/lib/supabase";
 
 export const Contact = () => {
+  const sectionRef = useRef<HTMLElement>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        ".contact-inner",
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1, y: 0, duration: 0.65,
+          scrollTrigger: { trigger: ".contact-inner", start: "top 85%", once: true },
+        }
+      );
+    }, sectionRef);
+    return () => ctx.revert();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,8 +51,8 @@ export const Contact = () => {
   };
 
   return (
-    <section id="contact" className="relative py-24 sm:py-32">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <section id="contact" ref={sectionRef} className="relative py-20 sm:py-28 border-t border-border/30">
+      <div className="contact-inner mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div>
             <p className="text-xs font-mono uppercase tracking-widest text-primary mb-4">Contact</p>

@@ -1,4 +1,9 @@
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const faqs = [
   {
@@ -40,14 +45,30 @@ const faqs = [
 ];
 
 export const FAQ = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        ".faq-inner",
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1, y: 0, duration: 0.65,
+          scrollTrigger: { trigger: ".faq-inner", start: "top 85%", once: true },
+        }
+      );
+    }, sectionRef);
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="faq" className="relative py-24 sm:py-32">
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <p className="text-xs font-mono uppercase tracking-widest text-primary mb-4">FAQ</p>
-          <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gradient">Frequently Asked Questions</h2>
-          <p className="mt-4 text-muted-foreground text-sm">
-            Find quick answers about payment, access, activation, and what is included in your membership.
+    <section id="faq" ref={sectionRef} className="relative py-20 sm:py-28 border-t border-border/30">
+      <div className="faq-inner mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-10">
+          <p className="text-xs font-mono uppercase tracking-widest text-primary mb-3">FAQ</p>
+          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-gradient">Frequently Asked Questions</h2>
+          <p className="mt-3 text-muted-foreground text-sm">
+            Quick answers about payment, access, and what's included in your membership.
           </p>
         </div>
         <Accordion type="single" collapsible className="glass rounded-2xl px-2 sm:px-4">

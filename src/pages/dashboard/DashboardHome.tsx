@@ -3,7 +3,7 @@ import {
   MessageSquare, Image, Zap, Bot, Cpu, Video,
   GraduationCap, Wand2, Sparkles, Search, ArrowRight,
   BookOpen, Heart, TrendingUp, Flame, Newspaper, Star,
-  Crown, Infinity, BriefcaseBusiness, Lock, Eye, Activity, Clock,
+  Crown, Infinity, BriefcaseBusiness, Lock, Eye, Activity, Clock, Banana, Film,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useFavorites } from '@/contexts/FavoritesContext';
@@ -15,12 +15,16 @@ import { formatDistanceToNow, parseISO } from 'date-fns';
 const STAT_DEFS = [
   { label: 'LLM Prompts', key: 'prompts' as const, icon: MessageSquare, to: '/dashboard/prompts', accent: '#60a5fa' },
   { label: 'Image Prompts', key: 'image_prompts' as const, icon: Image, to: '/dashboard/image-prompts', accent: '#a78bfa' },
+  { label: 'GPT Image', key: 'gptimage_prompts' as const, icon: Wand2, to: '/dashboard/gptimage', accent: '#8b5cf6' },
+  { label: 'Grok Imagine', key: 'grok_imagine_prompts' as const, icon: Sparkles, to: '/dashboard/grok-imagine', accent: '#06b6d4' },
+  { label: 'Nano Banana', key: 'nano_banana_prompts' as const, icon: Banana, to: '/dashboard/nano-banana', accent: '#eab308' },
+  { label: 'Seedance', key: 'seedance_prompts' as const, icon: Film, to: '/dashboard/seedance', accent: '#f97316' },
   { label: 'Claude Skills', key: 'claude_skills' as const, icon: Bot, to: '/dashboard/claude-skills', accent: '#22d3ee' },
   { label: 'Automation', key: 'automation_templates' as const, icon: Zap, to: '/dashboard/automation', accent: '#facc15' },
   { label: 'Custom GPTs', key: 'custom_gpts' as const, icon: Cpu, to: '/dashboard/custom-gpts', accent: '#f472b6' },
-  { label: 'Videos', key: 'videos' as const, icon: Video, to: '/dashboard/videos', accent: '#4ade80' },
-  { label: 'Guides', key: 'guides' as const, icon: GraduationCap, to: '/dashboard/fundamentals', accent: '#fb923c' },
-  { label: 'Starter Kit', key: 'ai_starter_kit_prompts' as const, icon: BriefcaseBusiness, to: '/dashboard/ai-starter-kit', accent: '#f59e0b' },
+  { label: 'Videos', key: 'videos' as const, icon: Video, to: '/dashboard/videos', accent: '#ec4899' },
+  { label: 'Starter Kit', key: 'ai_starter_kit_prompts' as const, icon: BriefcaseBusiness, to: '/dashboard/ai-starter-kit', accent: '#fb923c' },
+  { label: 'Guides', key: 'guides' as const, icon: GraduationCap, to: '/dashboard/fundamentals', accent: '#fbbf24' },
 ];
 
 const TOOLS = [
@@ -77,13 +81,17 @@ const TOOLS = [
 const BROWSE_DEFS = [
   { to: '/dashboard/prompts', icon: MessageSquare, label: 'LLM Prompts', countKey: 'prompts' as const, desc: 'ChatGPT · Claude · Gemini', accent: '#60a5fa' },
   { to: '/dashboard/image-prompts', icon: Image, label: 'Image Prompts', countKey: 'image_prompts' as const, desc: 'Midjourney · DALL·E · Flux', accent: '#a78bfa' },
-  { to: '/dashboard/claude-skills', icon: Bot, label: 'Claude Skills', countKey: 'claude_skills' as const, desc: 'Slash commands for Claude Code', accent: '#22d3ee' },
-  { to: '/dashboard/automation', icon: Zap, label: 'Automation', countKey: 'automation_templates' as const, desc: 'n8n · Zapier · Make templates', accent: '#facc15' },
-  { to: '/dashboard/custom-gpts', icon: Cpu, label: 'Custom GPTs', countKey: 'custom_gpts' as const, desc: 'Ready-to-use ChatGPT configs', accent: '#f472b6' },
-  { to: '/dashboard/ai-starter-kit', icon: BriefcaseBusiness, label: 'AI Starter Kit', countKey: 'ai_starter_kit_prompts' as const, desc: 'Sections, prompts, and Claude skills', accent: '#f59e0b' },
-  { to: '/dashboard/fundamentals', icon: GraduationCap, label: 'Fundamentals', countKey: 'guides' as const, desc: 'Deep-dive AI education guides', accent: '#fb923c' },
-  { to: '/dashboard/ai-news', icon: Newspaper, label: 'AI News Feed', countKey: null, staticCount: 'Live' as const, desc: 'Daily AI news from dev community', accent: '#38bdf8' },
-  { to: '/dashboard/ai-models', icon: Star, label: 'AI Model Picks', countKey: null, staticCount: 13 as const, desc: 'Best model for every task', accent: '#f59e0b' },
+  { to: '/dashboard/gptimage', icon: Wand2, label: 'GPT Image Prompts', countKey: 'gptimage_prompts' as const, desc: 'OpenAI GPT Image', accent: '#8b5cf6' },
+  { to: '/dashboard/grok-imagine', icon: Sparkles, label: 'Grok Imagine', countKey: 'grok_imagine_prompts' as const, desc: 'xAI Grok Image', accent: '#06b6d4' },
+  { to: '/dashboard/nano-banana', icon: Banana, label: 'Nano Banana', countKey: 'nano_banana_prompts' as const, desc: '12K+ Image Prompts', accent: '#eab308' },
+  { to: '/dashboard/seedance', icon: Film, label: 'Seedance', countKey: 'seedance_prompts' as const, desc: 'AI Video Prompts', accent: '#f97316' },
+  { to: '/dashboard/claude-skills', icon: Bot, label: 'Claude Skills', countKey: 'claude_skills' as const, desc: 'Claude Code Commands', accent: '#22d3ee' },
+  { to: '/dashboard/automation', icon: Zap, label: 'Automation', countKey: 'automation_templates' as const, desc: 'n8n · Zapier · Make', accent: '#facc15' },
+  { to: '/dashboard/custom-gpts', icon: Cpu, label: 'Custom GPTs', countKey: 'custom_gpts' as const, desc: 'ChatGPT Configs', accent: '#f472b6' },
+  { to: '/dashboard/ai-starter-kit', icon: BriefcaseBusiness, label: 'Starter Kit', countKey: 'ai_starter_kit_prompts' as const, desc: 'Prompts & Skills', accent: '#fb923c' },
+  { to: '/dashboard/videos', icon: Video, label: 'Videos', countKey: 'videos' as const, desc: 'Video Tutorials', accent: '#ec4899' },
+  { to: '/dashboard/fundamentals', icon: GraduationCap, label: 'Guides', countKey: 'guides' as const, desc: 'AI Education', accent: '#fbbf24' },
+  { to: '/dashboard/ai-models', icon: Star, label: 'AI Model Picks', countKey: null, staticCount: 13 as const, desc: 'Best Models', accent: '#f59e0b' },
 ];
 
 type StatDef = typeof STAT_DEFS[number];
@@ -318,7 +326,7 @@ export default function DashboardHome() {
               <strong className="text-foreground font-semibold">
                 {totalResources != null ? `${totalResources.toLocaleString()} AI resources` : 'thousands of AI resources'}
               </strong>{' '}
-              across 8 categories.
+              across 13 categories.
               {favorites.length > 0 && (
                 <> You've saved <strong className="text-foreground">{favorites.length}</strong> favourite{favorites.length !== 1 ? 's' : ''}.</>
               )}
@@ -375,7 +383,7 @@ export default function DashboardHome() {
       {/* Stats */}
       <section>
         <SectionHeading icon={TrendingUp} label="Content Library" sub="Click any card to browse" />
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
           {STAT_DEFS.map((s) => (
             <StatCard key={s.to} {...s} value={counts ? counts[s.key] : null} />
           ))}

@@ -41,6 +41,7 @@ import TrendingPrompts from './pages/dashboard/TrendingPrompts';
 import GrokImaginePrompts from './pages/dashboard/GrokImaginePrompts';
 import SeedancePrompts from './pages/dashboard/SeedancePrompts';
 import NanoBananaPrompts from './pages/dashboard/NanoBananaPrompts';
+import GptImagePrompts from './pages/dashboard/GptImagePrompts';
 import AdminDashboard from './pages/admin/AdminDashboard';
 
 const queryClient = new QueryClient();
@@ -89,6 +90,7 @@ const App = () => (
                 <Route path="grok-imagine" element={<GrokImaginePrompts />} />
                 <Route path="seedance" element={<SeedancePrompts />} />
                 <Route path="nano-banana" element={<NanoBananaPrompts />} />
+                <Route path="gptimage" element={<GptImagePrompts />} />
                 <Route path="profile" element={<Profile />} />
               </Route>
 

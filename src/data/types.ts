@@ -350,3 +350,20 @@ export interface NanoBananaPrompt {
   author: { name: string; link: string } | null;
   sourceMedia: string[] | null;
 }
+
+export interface GptImagePrompt {
+  id: string;
+  rank: number | null;
+  model: string | null;
+  categories: string[] | null;
+  prompt: string | null;
+  author: string | null;
+  likes: number | null;
+  views: number | null;
+  rating: number | null;
+  score: number | null;
+  date: string | null;
+  source_url: string | null;
+  image_url: string | null;
+  created_at: string | null;
+}

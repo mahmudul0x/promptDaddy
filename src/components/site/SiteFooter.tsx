@@ -14,8 +14,7 @@ export const SiteFooter = () => {
         </div>
         <p className="text-sm text-muted-foreground font-medium tracking-wide">PROMPT BETTER. CREATE FASTER. GROW MORE.</p>
         <nav className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
-          <a href="#features" className="hover:text-foreground transition-colors">Features</a>
-          <a href="#tools" className="hover:text-foreground transition-colors">Tools</a>
+          <a href="#services" className="hover:text-foreground transition-colors">Services</a>
           <a href="#pricing" className="hover:text-foreground transition-colors">Pricing</a>
           <a href="#faq" className="hover:text-foreground transition-colors">FAQ</a>
           <a href="#contact" className="hover:text-foreground transition-colors">Contact</a>

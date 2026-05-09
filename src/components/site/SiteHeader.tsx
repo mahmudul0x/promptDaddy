@@ -19,10 +19,10 @@ export const SiteHeader = () => {
           </Link>
 
           <nav className="hidden md:flex items-center gap-7 text-sm text-muted-foreground">
-            <a href="#features" className="hover:text-foreground transition-colors">Features</a>
-            <a href="#tools" className="hover:text-foreground transition-colors">Tools</a>
+            <a href="#services" className="hover:text-foreground transition-colors">Services</a>
             <a href="#pricing" className="hover:text-foreground transition-colors">Pricing</a>
             <a href="#faq" className="hover:text-foreground transition-colors">FAQ</a>
+            <a href="#contact" className="hover:text-foreground transition-colors">Contact</a>
           </nav>
 
           <div className="flex items-center gap-2">
