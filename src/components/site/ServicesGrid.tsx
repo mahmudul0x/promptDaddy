@@ -4,6 +4,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   MessageSquare, Bot, Image, BriefcaseBusiness, TrendingUp,
   Workflow, Search, Wand2, Video, ArrowRight,
+  Sparkles, Banana, Zap, Cpu, GraduationCap, Film,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -12,68 +13,68 @@ gsap.registerPlugin(ScrollTrigger);
 const SERVICES = [
   {
     icon: MessageSquare,
-    title: "Prompt Library",
-    desc: "1,000+ expert prompts for ChatGPT, Claude & Gemini — organized by category, copy-paste ready.",
-    tag: "1,000+ prompts",
+    title: "LLM Prompts",
+    desc: "900+ expert prompts for ChatGPT, Claude & Gemini — organized by category, copy-paste ready.",
+    tag: "900+ prompts",
     accent: "#60a5fa",
     badge: "Most Popular",
   },
   {
-    icon: Bot,
-    title: "Claude Skills",
-    desc: "Pre-built instruction sets that turn Claude into a specialist — activate with one slash command.",
-    tag: "600+ skills",
-    accent: "#DA7756",
-  },
-  {
     icon: Image,
     title: "Image Prompts",
-    desc: "500+ prompts for Midjourney, DALL·E 3 & Flux. Product photography, UGC, social graphics.",
-    tag: "500+ prompts",
-    accent: "#f472b6",
-  },
-  {
-    icon: BriefcaseBusiness,
-    title: "AI Starter Kit",
-    desc: "450 prompts & 20 Claude Skills structured for solopreneurs — know exactly what to use and when.",
-    tag: "450 items",
-    accent: "#f59e0b",
-    badge: "Beginner Friendly",
-  },
-  {
-    icon: TrendingUp,
-    title: "Trending Prompts",
-    desc: "Live leaderboard of the highest-performing prompts this week, ranked by real community usage.",
-    tag: "Live updates",
-    accent: "#f97316",
-  },
-  {
-    icon: Workflow,
-    title: "Automation Templates",
-    desc: "Ready-to-import n8n, Zapier & Make blueprints. Set the workflow, let the automation run.",
-    tag: "20+ templates",
-    accent: "#4ade80",
-  },
-  {
-    icon: Search,
-    title: "AI Search",
-    desc: "Describe what you want and instantly surface the exact prompt, tutorial, or template you need.",
-    tag: "1,000+ resources",
-    accent: "#22d3ee",
+    desc: "146+ prompts for Midjourney, DALL·E 3 & Flux. Product photography, UGC, social graphics.",
+    tag: "146+ prompts",
+    accent: "#a78bfa",
   },
   {
     icon: Wand2,
-    title: "Prompt Enhancer",
-    desc: "Paste any rough prompt and get a precision-engineered version back — for any LLM or image model.",
-    tag: "LLM + Image",
-    accent: "#c084fc",
+    title: "GPT Image",
+    desc: "298+ prompts for OpenAI GPT Image generation with scores and ratings.",
+    tag: "298+ prompts",
+    accent: "#8b5cf6",
+  },
+  {
+    icon: Sparkles,
+    title: "Grok Imagine",
+    desc: "1,200+ prompts for xAI Grok image generation from curated sources.",
+    tag: "1,200+ prompts",
+    accent: "#06b6d4",
+  },
+  {
+    icon: Banana,
+    title: "Nano Banana",
+    desc: "13,900+ curated image generation prompts with reference media.",
+    tag: "13,900+ prompts",
+    accent: "#eab308",
+  },
+  {
+    icon: Film,
+    title: "Seedance",
+    desc: "2,300+ AI video generation prompts for Seedance platform.",
+    tag: "2,300+ prompts",
+    accent: "#f97316",
+  },
+  {
+    icon: Bot,
+    title: "Claude Skills",
+    desc: "50+ instruction sets that turn Claude into a specialist.",
+    tag: "50+ skills",
+    accent: "#22d3ee",
   },
   {
     icon: Video,
-    title: "Tutorials & Videos",
-    desc: "In-depth guides and video walkthroughs covering advanced AI techniques and practical workflows.",
-    tag: "Growing library",
+    title: "Videos",
+    desc: "32+ video tutorials covering advanced AI techniques.",
+    tag: "32+ videos",
+    accent: "#ec4899",
+  },
+  {
+    icon: BriefcaseBusiness,
+    title: "Starter Kit",
+    desc: "500+ prompts & 20 Claude Skills structured for solopreneurs.",
+    tag: "500+ items",
     accent: "#fb923c",
+    badge: "Beginner Friendly",
   },
 ];
 
@@ -201,8 +202,12 @@ export const ServicesGrid = () => {
               {/* Tag */}
               <div className="flex items-center justify-between">
                 <span
-                  className="text-[10px] font-mono font-semibold"
-                  style={{ color: accent }}
+                  className="text-sm font-bold px-2 py-1 rounded-lg"
+                  style={{ 
+                    color: accent,
+                    background: `${accent}18`,
+                    border: `1px solid ${accent}35`,
+                  }}
                 >
                   {tag}
                 </span>

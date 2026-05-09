@@ -33,13 +33,16 @@ type MethodId = typeof METHODS[number]["id"];
 type Step = "method" | "form" | "done";
 
 const features = [
-  "900+ LLM Prompts",
-  "147 Image & Video Prompts",
-  "51 Claude Skill Scrolls",
-  "AI Search",
-  "LLM Prompt Enhancer",
-  "Image Prompt Enhancer",
-  "20 Automation Templates",
+  "19,000+ Trending Prompts",
+  "900+ Prompt Library",
+  "17,000+ Image Prompts",
+  "500+ AI Starter Kit",
+  "50+ Claude Skills",
+  "1,200+ Grok Imagine",
+  "2,300+ Seedance Prompts",
+  "13,900+ Nano Banana",
+  "300+ GPT Image",
+  "20+ Automation Templates",
   "15 Custom GPT Blueprints",
   "Tutorials & Fundamentals",
   "AI News Feed",

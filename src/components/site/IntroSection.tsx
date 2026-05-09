@@ -421,9 +421,8 @@ export const IntroSection = () => {
           </div>
 
           {/* Sub copy */}
-          <p className="intro-sub mt-5 text-sm sm:text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            Claude Skills, image prompts &amp; automation templates — hand-tested for
-            ChatGPT, Claude &amp; Gemini. Updated every week.
+          <p className="intro-sub mt-5 text-sm sm:text-base text-muted-foreground max-w-xl mx-auto leading-relaxed text-center">
+            <span className="text-primary font-semibold">Claude Skills, image prompts &amp; automation templates</span> — hand-tested for ChatGPT, Claude &amp; Gemini. <span className="text-emerald-400 font-medium">Updated every week.</span>
           </p>
 
           {/* Pills */}
