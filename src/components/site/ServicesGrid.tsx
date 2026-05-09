@@ -2,76 +2,77 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
-  MessageSquare, Bot, Image, BriefcaseBusiness, TrendingUp,
+  MessageSquare, Bot, Image, BriefcaseBusiness,
   Workflow, Search, Wand2, Video, ArrowRight,
-  Sparkles, Banana, Zap, Cpu, GraduationCap, Film,
+  Sparkles, Banana, Film,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const SERVICES = [
   {
     icon: MessageSquare,
-    title: "LLM Prompts",
-    desc: "900+ expert prompts for ChatGPT, Claude & Gemini — organized by category, copy-paste ready.",
+    titleKey: "llm.title",
+    descKey: "llm.desc",
     tag: "900+ prompts",
     accent: "#60a5fa",
     badge: "Most Popular",
   },
   {
     icon: Image,
-    title: "Image Prompts",
-    desc: "146+ prompts for Midjourney, DALL·E 3 & Flux. Product photography, UGC, social graphics.",
+    titleKey: "image.title",
+    descKey: "image.desc",
     tag: "146+ prompts",
     accent: "#a78bfa",
   },
   {
     icon: Wand2,
-    title: "GPT Image",
-    desc: "298+ prompts for OpenAI GPT Image generation with scores and ratings.",
+    titleKey: "gptimage.title",
+    descKey: "gptimage.desc",
     tag: "298+ prompts",
     accent: "#8b5cf6",
   },
   {
     icon: Sparkles,
-    title: "Grok Imagine",
-    desc: "1,200+ prompts for xAI Grok image generation from curated sources.",
+    titleKey: "grok.title",
+    descKey: "grok.desc",
     tag: "1,200+ prompts",
     accent: "#06b6d4",
   },
   {
     icon: Banana,
-    title: "Nano Banana",
-    desc: "13,900+ curated image generation prompts with reference media.",
+    titleKey: "nano.title",
+    descKey: "nano.desc",
     tag: "13,900+ prompts",
     accent: "#eab308",
   },
   {
     icon: Film,
-    title: "Seedance",
-    desc: "2,300+ AI video generation prompts for Seedance platform.",
+    titleKey: "seedance.title",
+    descKey: "seedance.desc",
     tag: "2,300+ prompts",
     accent: "#f97316",
   },
   {
     icon: Bot,
-    title: "Claude Skills",
-    desc: "50+ instruction sets that turn Claude into a specialist.",
+    titleKey: "claude.title",
+    descKey: "claude.desc",
     tag: "50+ skills",
     accent: "#22d3ee",
   },
   {
     icon: Video,
-    title: "Videos",
-    desc: "32+ video tutorials covering advanced AI techniques.",
+    titleKey: "videos.title",
+    descKey: "videos.desc",
     tag: "32+ videos",
     accent: "#ec4899",
   },
   {
     icon: BriefcaseBusiness,
-    title: "Starter Kit",
-    desc: "500+ prompts & 20 Claude Skills structured for solopreneurs.",
+    titleKey: "starter.title",
+    descKey: "starter.desc",
     tag: "500+ items",
     accent: "#fb923c",
     badge: "Beginner Friendly",
@@ -80,6 +81,7 @@ const SERVICES = [
 
 export const ServicesGrid = () => {
   const sectionRef = useRef<HTMLElement>(null);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -140,33 +142,22 @@ export const ServicesGrid = () => {
         <div className="sg-heading text-center max-w-2xl mx-auto mb-14">
           <p className="text-xs font-mono uppercase tracking-widest text-primary mb-3 flex items-center justify-center gap-2">
             <span className="h-px w-5 bg-primary/50 inline-block" />
-            One membership. Everything inside.
+            {t('services.heading')}
             <span className="h-px w-5 bg-primary/50 inline-block" />
           </p>
           <h2 className="text-3xl sm:text-4xl font-black tracking-tight leading-tight">
-            Nine tools to supercharge
-            <span
-              className="block"
-              style={{
-                background: "var(--gradient-primary)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            >
-              your AI workflow.
-            </span>
+            {t('services.subheading')}
           </h2>
           <p className="mt-4 text-muted-foreground text-sm leading-relaxed">
-            Every resource is hand-tested, organized, and updated weekly — so you always have what's working right now.
+            {t('services.description')}
           </p>
         </div>
 
         {/* Grid */}
         <div className="sg-grid grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {SERVICES.map(({ icon: Icon, title, desc, tag, accent, badge }) => (
+          {SERVICES.map(({ icon: Icon, titleKey, descKey, tag, accent, badge }) => (
             <div
-              key={title}
+              key={titleKey}
               className="sg-card group relative rounded-2xl border border-border/40 bg-card/60 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-border/80 hover:shadow-lg overflow-hidden cursor-pointer"
             >
               {/* Hover glow */}
@@ -195,9 +186,9 @@ export const ServicesGrid = () => {
 
               {/* Content */}
               <h3 className="text-sm font-bold text-foreground mb-1.5 group-hover:text-primary transition-colors">
-                {title}
+                {t(titleKey)}
               </h3>
-              <p className="text-xs text-muted-foreground leading-relaxed mb-3">{desc}</p>
+              <p className="text-xs text-muted-foreground leading-relaxed mb-3">{t(descKey)}</p>
 
               {/* Tag */}
               <div className="flex items-center justify-between">
@@ -226,13 +217,13 @@ export const ServicesGrid = () => {
             className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-sm font-bold shadow-glow transition-all hover:opacity-90 hover:-translate-y-0.5"
             style={{ background: "var(--gradient-primary)", color: "hsl(var(--primary-foreground))" }}
           >
-            Get Full Access — ৳199/mo
+            {t('cta.getAccess')}
             <ArrowRight className="h-4 w-4" />
           </Link>
           <p className="text-xs text-muted-foreground">
             Or{" "}
             <a href="#pricing" className="text-primary hover:underline">
-              see all plans including Lifetime
+              {t('cta.seePlans')}
             </a>
           </p>
         </div>

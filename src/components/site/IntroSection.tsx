@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { gsap } from "gsap";
 import { ArrowRight, Zap, Copy, Bot, Image, Wand2, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 /* ─── Typewriter for the animated prompt line ─── */
 const ROTATING_PROMPTS = [
@@ -251,6 +252,7 @@ export const IntroSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const mouseRef   = useRef({ x: -200, y: -200 });
   const { displayed, phase } = useTypewriter(ROTATING_PROMPTS);
+  const { t } = useLanguage();
 
   const onMove = useCallback((e: React.MouseEvent<HTMLElement>) => {
     const rect = sectionRef.current?.getBoundingClientRect();
@@ -416,13 +418,13 @@ export const IntroSection = () => {
               </div>
             </div>
             <p className="mt-2 text-[10px] text-muted-foreground/40 font-mono text-center">
-              19,000+ expert prompts ready to use — just copy & paste
+              {t('hero.prompts')}
             </p>
           </div>
 
           {/* Sub copy */}
           <p className="intro-sub mt-5 text-sm sm:text-base text-muted-foreground max-w-xl mx-auto leading-relaxed text-center">
-            <span className="text-primary font-semibold">Claude Skills, image prompts &amp; automation templates</span> — hand-tested for ChatGPT, Claude &amp; Gemini. <span className="text-emerald-400 font-medium">Updated every week.</span>
+            <span className="text-primary font-semibold">{t('hero.subtitle')}</span> {t('hero.subtitle2')}
           </p>
 
           {/* Pills */}

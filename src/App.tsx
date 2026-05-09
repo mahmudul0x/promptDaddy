@@ -7,6 +7,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { FavoritesProvider } from '@/contexts/FavoritesContext';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { LanguageProvider } from '@/contexts/LanguageContext';
 
 import Index from './pages/Index';
 import NotFound from './pages/NotFound';
@@ -53,10 +54,11 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-        <AuthProvider>
-          <FavoritesProvider>
-            <Routes>
+<BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+          <AuthProvider>
+            <FavoritesProvider>
+              <LanguageProvider>
+                <Routes>
               {/* Public */}
               <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
@@ -97,8 +99,9 @@ const App = () => (
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
-          </FavoritesProvider>
-        </AuthProvider>
+              </LanguageProvider>
+            </FavoritesProvider>
+          </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
