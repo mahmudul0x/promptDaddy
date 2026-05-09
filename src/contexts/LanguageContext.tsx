@@ -9,10 +9,12 @@ interface translations {
 }
 
 const TRANSLATIONS: translations = {
+  "nav.home": { en: "Home", bn: "হোম", hi: "होम", es: "Inicio", fr: "Accueil", ar: "الرئيسية" },
   "nav.services": { en: "Services", bn: "সেবা", hi: "सेवाएं", es: "Servicios", fr: "Services", ar: "الخدمات" },
   "nav.pricing": { en: "Pricing", bn: "মূল্য", hi: "मूल्य निर्धारण", es: "Precios", fr: "Tarifs", ar: "التسعير" },
   "nav.faq": { en: "FAQ", bn: "প্রশ্নাবলী", hi: "सामान्य प्रश्न", es: "Preguntas", fr: "FAQ", ar: "الأسئلة الشائعة" },
   "nav.contact": { en: "Contact", bn: "যোগাযোগ", hi: "संपर्क", es: "Contacto", fr: "Contact", ar: "اتصل بنا" },
+  "nav.demo": { en: "Demo", bn: "ডেমো", hi: "डेमो", es: "Demo", fr: "Demo", ar: "تجربة" },
   "nav.signIn": { en: "Sign In", bn: "সাইন ইন", hi: "साइन इन", es: "Iniciar sesión", fr: "Connexion", ar: "تسجيل الدخول" },
   "nav.getStarted": { en: "Get Started", bn: "শুরু করুন", hi: "शुरू करें", es: "Comenzar", fr: "Commencer", ar: "ابدأ الآن" },
   "nav.dashboard": { en: "Dashboard", bn: "ড্যাশবোর্ড", hi: "डैशबोर्ड", es: "Tablero", fr: "Tableau de bord", ar: "لوحة التحكم" },
@@ -65,14 +67,34 @@ const TRANSLATIONS: translations = {
   
   "pricing.title": { en: "Pricing", bn: "মূল্য", hi: "मूल्य निर्धारण", es: "Precios", fr: "Tarifs", ar: "التسعير" },
   "pricing.subtitle": { en: "Simple, transparent pricing for everyone.", bn: "সবার জন্য সহজ, স্বচ্ছ মূল্য।", hi: "सरल, पारदर्शी मूल्य निर्धारण।", es: "Precios simples y transparentes.", fr: "Tarification simple et transparente.", ar: "تسعير بسيط وشفاف للجميع." },
+  "pricing.choose": { en: "Choose monthly or pay once and own it forever.", bn: "মাসিক নিন বা একবার দিয়ে চিরদিনের জন্য মালিক হোন।", hi: "मासिक चुनें या एक बार भुगतान करें और हमेशा के लिए रखें।", es: "Elige mensual o paga una vez y ten para siempre.", fr: "Choisissez mensuel ou payez une fois pour garder à vie.", ar: "اختر شهري أو ادفع لمرة واحدة وحافظ عليه للأبد." },
   "pricing.monthly": { en: "Monthly", bn: "মাসিক", hi: "मासिक", es: "Mensual", fr: "Mensuel", ar: "شهري" },
   "pricing.yearly": { en: "Yearly", bn: "বার্ষিক", hi: "वार्षिक", es: "Anual", fr: "Annuel", ar: "سنوي" },
   "pricing.lifetime": { en: "Lifetime", bn: "লাইফটাইম", hi: "आजीवन", es: "De por vida", fr: "À vie", ar: "مدى الحياة" },
   "pricing.oneTime": { en: "One-time", bn: "একবার", hi: "एक बार", es: "Una vez", fr: "Une fois", ar: "لمرة واحدة" },
   
-  "faq.title": { en: "FAQ", bn: "প্রশ্নাবলী", hi: "सामान्य प्रश्न", es: "Preguntas frecuentes", fr: "FAQ", ar: "الأسئلة الشائعة" },
+  "how.subtitle": { en: "Up and running in 3 steps.", bn: "৩ ধাপে চালু হোন।", hi: "3 चरणों में शुरू करें।", es: "En funcionamiento en 3 pasos.", fr: "Fonctionne en 3 étapes.", ar: "يعمل في 3 خطوات." },
+  "how.description": { en: "No complex setup. No waiting. Just access.", bn: "কোনো জটিল সেটআপ নেই। অপেক্ষা নেই। শুধু অ্যাক্সেস।", hi: "कोई जटिल सेटअप नहीं। बस पहुंच।", es: "Sin configuración compleja. Solo acceso.", fr: "Pas de configuration complexe. Juste l'accès.", ar: "لا إعداد معقد. فقط الوصول." },
+  
+  "faq.subtitle": { en: "Frequently Asked Questions", bn: "প্রায় জিজ্ঞাসিত প্রশ্ন", hi: "बार पूछे जाने वाले प्रश्न", es: "Preguntas frecuentes", fr: "Questions fréquemment posées", ar: "الأسئلة الشائعة" },
+"faq.description": { en: "Quick answers about payment, access, and what's included in your membership.", bn: "মেম্বারশিপে অন্তর্ভুক্ত পেমেন্ট, অ্যাক্সেস এবং কী আছে সে সম্পর্কে দ্রুত উত্তর।", hi: "भुगतान, पहुंच और आपके सदस्यता में क्या शामिल है इसके बारे में त्वरित उत्तर।", es: "Respuestas rápidas sobre pago, acceso y qué está incluido en tu membresía.", fr: "Réponses rapides sur le paiement, l'accès et ce qui est inclus dans votre adhésion.", ar: "إجابات سريعة حول الدفع والوصول وما Included في عضويتك." },
   
   "contact.title": { en: "Contact", bn: "যোগাযোগ", hi: "संपर्क", es: "Contacto", fr: "Contact", ar: "اتصل بنا" },
+  "contact.subtitle": { en: "Talk to us", bn: "আমাদের সাথে কথা বলুন", hi: "हमसे बात करें", es: "Contáctanos", fr: "Contactez-nous", ar: "تحدث معنا" },
+  "contact.description": { en: "Have a payment issue, account question, or general inquiry? Send us a message and we will get back to you as quickly as possible.", bn: "পেমেন্ট সমস্যা, অ্যাকাউন্ট প্রশ্ন বা সাধারণ জিজ্ঞাসা? আমাদের একটি মেসেজ পাঠান এবং আমরা আপনার কাছে যত দ্রুত সম্ভব ফিরে আসব।", hi: "भुगतान मुद्दा, खाता प्रश्न, या सामान्य पूछताछ? हमें एक संदेश भेजें और हम जितनी जल्दी हो सके वापस आएंगे।", es: "¿Tienes un problema de pago, pregunta de cuenta o consulta general? Envíanos un mensaje y te responderemos lo antes posible.", fr: "Un problème de paiement, une question sur le compte ou une demande générale? Envoyez-nous un message et nous vous répondrons dès que possible.", ar: "هل لديك مشكلة في الدفع أو سؤال عن الحساب أو استعلام عام؟ أرسل لنا رسالة وسنعود إليك في أسرع وقت ممكن." },
+  "contact.emailTitle": { en: "Email Support", bn: "ইমেইল সাপোর্ট", hi: "ईमेल सहायता", es: "Soporte por correo", fr: "Support par e-mail", ar: "دعم البريد الإلكتروني" },
+  "contact.emailDesc": { en: "Best for payment confirmation, activation issues, and account support.", bn: "পেমেন্ট নিশ্চিতকরণ, অ্যাক্টিভেশন সমস্যা এবং অ্যাকাউন্ট সাপোর্টের জন্য সেরা।", hi: "भुगतान पुष्टि, सक्रियण मुद्दों, और खाता सहायता के लिए सबसे अच्छा।", es: "Lo mejor para confirmación de pago, problemas de activación y soporte de cuenta.", fr: "Idéal pour confirmation de paiement, problèmes d'activation et support de compte.", ar: "الأفضل لتأكيد الدفع ومشاكل التفعيل ودعم الحساب." },
+  "contact.telegramTitle": { en: "Telegram Group", bn: "টেলিগ্রাম গ্রুপ", hi: "टेलीग्राम ग्रुप", es: "Grupo de Telegram", fr: "Groupe Telegram", ar: "مجموعة تيليجرام" },
+  "contact.telegramDesc": { en: "Join our community for prompts, tips, and AI discussions.", bn: "প্রম্পট, টিপস এবং AI আলোচনার জন্য আমাদের কমিউনিটিতে যোগ দিন।", hi: "प्रॉम्प्ट्स, टिप्स और AI चर्चा के लिए हमारे समुदाय में शामिल हों।", es: "Únete a nuestra comunidad para prompts, consejos y discusiones de IA.", fr: "Rejoignez notre communauté pour les prompts, conseils et discussions IA.", ar: "انضم إلى مجموعتنا للأوامر ونصائح ومناقشات الذكاء الاصطناعي." },
+  "contact.formName": { en: "Your name", bn: "আপনার নাম", hi: "आपका नाम", es: "Tu nombre", fr: "Votre nom", ar: "اسمك" },
+  "contact.formEmail": { en: "Email address", bn: "ইমেইল ঠিকানা", hi: "ईमेल पता", es: "Dirección de correo", fr: "Adresse e-mail", ar: "عنوان البريد الإلكتروني" },
+  "contact.formMessage": { en: "Your message", bn: "আপনার মেসেজ", hi: "आपका संदेश", es: "Tu mensaje", fr: "Votre message", ar: "رسالتك" },
+  "contact.formSend": { en: "Send Message", bn: "মেসেজ পাঠান", hi: "संदेश भेजें", es: "Enviar mensaje", fr: "Envoyer le message", ar: "إرسال الرسالة" },
+  "contact.formSuccess": { en: "Message sent!", bn: "মেসেজ পাঠানো হয়েছে!", hi: "संदेश भेज दिया!", es: "¡Mensaje enviado!", fr: "Message envoyé!", ar: "تم إرسال الرسالة!" },
+  
+  "footer.tagline": { en: "PROMPT BETTER. CREATE FASTER. GROW MORE.", bn: "ভালো প্রম্পট। দ্রুত তৈরি। বেশি বৃদ্ধি।", hi: "বেতর প্রম্পট। তেজ নির্মাণ। অধিক বিকাশ।", es: "MEJOR PROMPT. CREA MÁS RÁPIDO. CRECE MÁS.", fr: "MIEUX PROMPTER. CRÉER PLUS VITE. GRANDIR PLUS.", ar: "PROMPT лучше. Создавайте быстрее. Растите больше." },
+  "footer.privacy": { en: "Privacy", bn: "গোপনীয়তা", hi: "गोपनीयता", es: "Privacidad", fr: "Confidentialité", ar: "الخصوصية" },
+  "footer.terms": { en: "Terms", bn: "শর্তাবলী", hi: "नियम", es: "Términos", fr: "Conditions", ar: "الشروط" },
 };
 
 interface LanguageContextType {

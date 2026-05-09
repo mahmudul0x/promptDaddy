@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 import { ArrowRight, Zap, Copy, Bot, Image, Wand2, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useTheme } from "@/contexts/ThemeContext";
 
 /* ─── Typewriter for the animated prompt line ─── */
 const ROTATING_PROMPTS = [
@@ -58,11 +59,13 @@ const FLOAT_CARDS = [
 ];
 
 /* ─── Particle Network ─── */
-function CursorGlow({ mouseRef }: { mouseRef: React.MutableRefObject<{ x: number; y: number }> }) {
+function CursorGlow({ mouseRef, isDark }: { mouseRef: React.MutableRefObject<{ x: number; y: number }>; isDark: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  // Particle colors: purple, blue, teal
-  const COLORS = ["#a78bfa", "#60a5fa", "#34d399"];
+  // Particle colors: purple, blue, teal (dark mode) / darker versions (light mode)
+  const COLORS = isDark 
+    ? ["#a78bfa", "#60a5fa", "#34d399"] 
+    : ["#7c3aed", "#2563eb", "#059669"];
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -253,6 +256,7 @@ export const IntroSection = () => {
   const mouseRef   = useRef({ x: -200, y: -200 });
   const { displayed, phase } = useTypewriter(ROTATING_PROMPTS);
   const { t } = useLanguage();
+  const { theme } = useTheme();
 
   const onMove = useCallback((e: React.MouseEvent<HTMLElement>) => {
     const rect = sectionRef.current?.getBoundingClientRect();
@@ -336,7 +340,7 @@ export const IntroSection = () => {
         />
 
         {/* ── Particle Network ── */}
-        <CursorGlow mouseRef={mouseRef} />
+        <CursorGlow mouseRef={mouseRef} isDark={theme === "dark"} />
 
         {/* ── Main content ── */}
         <div className="relative z-10 mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-center">

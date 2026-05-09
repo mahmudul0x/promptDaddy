@@ -353,17 +353,30 @@ export interface NanoBananaPrompt {
 
 export interface GptImagePrompt {
   id: string;
-  rank: number | null;
-  model: string | null;
-  categories: string[] | null;
-  prompt: string | null;
-  author: string | null;
-  likes: number | null;
-  views: number | null;
-  rating: number | null;
-  score: number | null;
-  date: string | null;
-  source_url: string | null;
+  rank: number;
+  model: string;
+  categories: string[];
+  prompt: string;
+  author: string;
+  likes: number;
+  views: number;
+  rating: number;
+  score: number;
+  date: string;
+  source_url: string;
+  image_url: string;
+  created_at: string;
+}
+
+export interface DemoPrompt {
+  id: number;
+  title: string;
+  prompt: string;
+  category: string;
   image_url: string | null;
-  created_at: string | null;
+  test_url: string;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }

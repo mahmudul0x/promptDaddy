@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { UserPlus, CreditCard, Zap } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -9,28 +10,29 @@ const STEPS = [
   {
     icon: UserPlus,
     step: "01",
-    title: "Create your account",
-    desc: "Sign up with email or Google in seconds. No credit card required to register.",
+    titleKey: "how.step1.title",
+    descKey: "how.step1.desc",
     accent: "#60a5fa",
   },
   {
     icon: CreditCard,
     step: "02",
-    title: "Choose your plan & pay",
-    desc: "Pick Monthly or Lifetime. Pay via bKash or Nagad — simple and secure.",
+    titleKey: "how.step2.title",
+    descKey: "how.step2.desc",
     accent: "#f59e0b",
   },
   {
     icon: Zap,
     step: "03",
-    title: "Get instant access",
-    desc: "Your account is activated after payment verification. Start using all 1,000+ resources immediately.",
+    titleKey: "how.step3.title",
+    descKey: "how.step3.desc",
     accent: "#4ade80",
   },
 ];
 
 export const HowItWorks = () => {
   const sectionRef = useRef<HTMLElement>(null);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -71,12 +73,12 @@ export const HowItWorks = () => {
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
 
         <div className="hiw-heading text-center mb-14">
-          <p className="text-xs font-mono uppercase tracking-widest text-primary mb-3">How it works</p>
+          <p className="text-xs font-mono uppercase tracking-widest text-primary mb-3">{t('how.title')}</p>
           <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-gradient">
-            Up and running in 3 steps.
+            {t('how.subtitle')}
           </h2>
           <p className="mt-3 text-sm text-muted-foreground">
-            No complex setup. No waiting. Just access.
+            {t('how.description')}
           </p>
         </div>
 
@@ -107,8 +109,8 @@ export const HowItWorks = () => {
                 >
                   STEP {s.step}
                 </span>
-                <h3 className="mt-1 text-base font-bold text-foreground">{s.title}</h3>
-                <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
+                <h3 className="mt-1 text-base font-bold text-foreground">{t(s.titleKey)}</h3>
+                <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">{t(s.descKey)}</p>
               </div>
             </div>
           ))}

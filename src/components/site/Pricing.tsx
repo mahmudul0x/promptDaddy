@@ -4,6 +4,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -419,6 +420,7 @@ function PaymentModal({ plan, onClose }: { plan: Plan; onClose: () => void }) {
 export const Pricing = () => {
   const { isAuthenticated } = useAuth();
   const sectionRef = useRef<HTMLElement>(null);
+  const { t } = useLanguage();
 
   const [activePlan,   setActivePlan]   = useState<PlanKey | null>(null);
   const [authGatePlan, setAuthGatePlan] = useState<PlanKey | null>(null);
@@ -489,10 +491,10 @@ export const Pricing = () => {
 
         {/* Heading */}
         <div className="pricing-heading text-center max-w-xl mx-auto mb-12">
-          <p className="text-xs font-mono uppercase tracking-widest text-primary mb-3">Pricing</p>
-          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-gradient">Simple, honest pricing.</h2>
+          <p className="text-xs font-mono uppercase tracking-widest text-primary mb-3">{t('pricing.title')}</p>
+          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-gradient">{t('pricing.subtitle')}</h2>
           <p className="mt-3 text-sm text-muted-foreground">
-            Choose monthly or pay once and own it forever.
+            {t('pricing.choose')}
           </p>
         </div>
 

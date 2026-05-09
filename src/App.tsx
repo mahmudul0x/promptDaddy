@@ -10,6 +10,7 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 
 import Index from './pages/Index';
+import Demo from './pages/Demo';
 import NotFound from './pages/NotFound';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
@@ -44,6 +45,7 @@ import SeedancePrompts from './pages/dashboard/SeedancePrompts';
 import NanoBananaPrompts from './pages/dashboard/NanoBananaPrompts';
 import GptImagePrompts from './pages/dashboard/GptImagePrompts';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminDemoPrompts from './pages/admin/AdminDemoPrompts';
 
 const queryClient = new QueryClient();
 
@@ -61,6 +63,7 @@ const App = () => (
                 <Routes>
               {/* Public */}
               <Route path="/" element={<Index />} />
+              <Route path="/demo" element={<Demo />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -97,6 +100,7 @@ const App = () => (
               </Route>
 
               <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/demo-prompts" element={<AdminDemoPrompts />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
               </LanguageProvider>

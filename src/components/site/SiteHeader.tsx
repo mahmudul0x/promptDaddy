@@ -30,10 +30,12 @@ export const SiteHeader = () => {
           </Link>
 
           <nav className="hidden md:flex items-center gap-7 text-sm text-muted-foreground">
-            <a href="#services" className="hover:text-foreground transition-colors">{t('nav.services')}</a>
-            <a href="#pricing" className="hover:text-foreground transition-colors">{t('nav.pricing')}</a>
-            <a href="#faq" className="hover:text-foreground transition-colors">{t('nav.faq')}</a>
-            <a href="#contact" className="hover:text-foreground transition-colors">{t('nav.contact')}</a>
+            <a href="/" className="hover:text-foreground transition-colors">{t('nav.home')}</a>
+            <a href="/#services" className="hover:text-foreground transition-colors">{t('nav.services')}</a>
+            <a href="/#pricing" className="hover:text-foreground transition-colors">{t('nav.pricing')}</a>
+            <a href="/#faq" className="hover:text-foreground transition-colors">{t('nav.faq')}</a>
+            <a href="/#contact" className="hover:text-foreground transition-colors">{t('nav.contact')}</a>
+            <Link to="/demo" className="hover:text-foreground transition-colors">{t('nav.demo')}</Link>
           </nav>
 
           <div className="flex items-center gap-2">

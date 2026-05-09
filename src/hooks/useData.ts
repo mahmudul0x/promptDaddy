@@ -7,6 +7,7 @@ import type {
   CustomGpt, AutomationTemplate, ClaudeSkill, AiModelRecommendation,
   ClaudeSkillBundle,
   GrokImaginePrompt, SeedancePrompt, NanoBananaPrompt, GptImagePrompt,
+  DemoPrompt,
 } from '@/data/types';
 
 // ─────────────────────────────────────────────
@@ -184,6 +185,13 @@ export const useGptImagePrompts = () =>
     queryKey: ['gptimage_prompts'],
     queryFn: () => fetchAll<GptImagePrompt>('gptimage_prompts'),
     staleTime: 10 * 60 * 1000,
+  });
+
+export const useDemoPrompts = () =>
+  useQuery<DemoPrompt[]>({
+    queryKey: ['demo_prompts'],
+    queryFn: () => fetchAll<DemoPrompt>('demo_prompts'),
+    staleTime: 5 * 60 * 1000,
   });
 
 export const useContentCounts = () =>
