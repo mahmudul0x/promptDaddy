@@ -19,6 +19,7 @@ const SERVICES = [
     tag: "900+ prompts",
     accent: "#60a5fa",
     badge: "Most Popular",
+    img: "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=80&auto=format&fit=crop",
   },
   {
     icon: Image,
@@ -26,6 +27,7 @@ const SERVICES = [
     descKey: "image.desc",
     tag: "146+ prompts",
     accent: "#a78bfa",
+    img: "https://images.unsplash.com/photo-1686191128892-3b37add4c844?w=600&q=80&auto=format&fit=crop",
   },
   {
     icon: Wand2,
@@ -33,6 +35,7 @@ const SERVICES = [
     descKey: "gptimage.desc",
     tag: "298+ prompts",
     accent: "#8b5cf6",
+    img: "https://images.unsplash.com/photo-1681400693765-a78e1a487025?w=600&q=80&auto=format&fit=crop",
   },
   {
     icon: Sparkles,
@@ -40,6 +43,7 @@ const SERVICES = [
     descKey: "grok.desc",
     tag: "1,200+ prompts",
     accent: "#06b6d4",
+    img: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&q=80&auto=format&fit=crop",
   },
   {
     icon: Banana,
@@ -47,6 +51,7 @@ const SERVICES = [
     descKey: "nano.desc",
     tag: "13,900+ prompts",
     accent: "#eab308",
+    img: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80&auto=format&fit=crop",
   },
   {
     icon: Film,
@@ -54,6 +59,7 @@ const SERVICES = [
     descKey: "seedance.desc",
     tag: "2,300+ prompts",
     accent: "#f97316",
+    img: "https://images.unsplash.com/photo-1536240478700-b869ad10e2c8?w=600&q=80&auto=format&fit=crop",
   },
   {
     icon: Bot,
@@ -61,6 +67,7 @@ const SERVICES = [
     descKey: "claude.desc",
     tag: "50+ skills",
     accent: "#22d3ee",
+    img: "https://images.unsplash.com/photo-1676277791608-ac54525aa94d?w=600&q=80&auto=format&fit=crop",
   },
   {
     icon: Video,
@@ -68,6 +75,7 @@ const SERVICES = [
     descKey: "videos.desc",
     tag: "32+ videos",
     accent: "#ec4899",
+    img: "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=600&q=80&auto=format&fit=crop",
   },
   {
     icon: BriefcaseBusiness,
@@ -76,6 +84,7 @@ const SERVICES = [
     tag: "500+ items",
     accent: "#fb923c",
     badge: "Beginner Friendly",
+    img: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=600&q=80&auto=format&fit=crop",
   },
 ];
 
