@@ -363,6 +363,19 @@ export default function AdminDashboard() {
     }
   }, []);
 
+  const fetchDemoPrompts = useCallback(async () => {
+    setDemoLoading(true);
+    try {
+      const { data, error } = await supabase.from('demo_prompts').select('*').order('sort_order', { ascending: true });
+      if (error) throw error;
+      setDemoPrompts((data || []) as DemoPromptRow[]);
+    } catch (e) {
+      console.error('fetchDemoPrompts error:', e);
+    } finally {
+      setDemoLoading(false);
+    }
+  }, []);
+
   /* ── Effects ── */
   // Initial admin list fetch
   useEffect(() => {
@@ -741,19 +754,6 @@ export default function AdminDashboard() {
   };
 
   // ── Demo Prompts handlers ─────────────────────────────────
-  const fetchDemoPrompts = useCallback(async () => {
-    setDemoLoading(true);
-    try {
-      const { data, error } = await supabase.from('demo_prompts').select('*').order('sort_order', { ascending: true });
-      if (error) throw error;
-      setDemoPrompts((data || []) as DemoPromptRow[]);
-    } catch (e) {
-      console.error('fetchDemoPrompts error:', e);
-    } finally {
-      setDemoLoading(false);
-    }
-  }, []);
-
   const openDemoForm = (row?: DemoPromptRow) => {
     if (row) {
       setDemoEditing(row);
