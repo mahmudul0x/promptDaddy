@@ -190,7 +190,14 @@ export const useGptImagePrompts = () =>
 export const useDemoPrompts = () =>
   useQuery<DemoPrompt[]>({
     queryKey: ['demo_prompts'],
-    queryFn: () => fetchAll<DemoPrompt>('demo_prompts'),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('demo_prompts')
+        .select('*')
+        .order('sort_order', { ascending: true });
+      if (error) throw new Error(error.message);
+      return (data || []) as DemoPrompt[];
+    },
     staleTime: 5 * 60 * 1000,
   });
 

@@ -1,5 +1,6 @@
 import { IntroSection } from "@/components/site/IntroSection";
 import { ServicesGrid } from "@/components/site/ServicesGrid";
+import { DemoPromptsSection } from "@/components/site/DemoPromptsSection";
 import { HowItWorks } from "@/components/site/HowItWorks";
 import { Pricing } from "@/components/site/Pricing";
 import { FAQ } from "@/components/site/FAQ";
@@ -13,6 +14,7 @@ const Index = () => {
       <SiteHeader />
       <IntroSection />
       <ServicesGrid />
+      <DemoPromptsSection />
       <HowItWorks />
       <Pricing />
       <FAQ />

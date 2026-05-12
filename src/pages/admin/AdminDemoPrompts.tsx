@@ -1,20 +1,18 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, Pencil, Trash2, Loader2, Image, ExternalLink } from "lucide-react";
-import { createClient } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/lib/supabase";
 import { useDemoPrompts } from "@/hooks/useData";
 import type { DemoPrompt } from "@/data/types";
 
-const dataSupabase = createClient(
-  import.meta.env.VITE_DATA_SUPABASE_URL as string,
-  import.meta.env.VITE_DATA_SUPABASE_ANON_KEY as string
-);
+// demo_prompts table lives in the auth Supabase project
+const authSupabase = supabase;
 
 const CATEGORIES = ["Email", "Content", "Image", "GPT Image", "Claude Skill", "Social", "Video", "Automation"];
 
@@ -82,18 +80,15 @@ export default function AdminDemoPrompts() {
 
     setUploading(true);
     try {
-      const fileName = `demo-${Date.now()}-${file.name}`;
-      const { data: uploadData, error } = await dataSupabase.storage
-        .from("editor-content")
-        .upload(fileName, file);
-
-      if (error) throw error;
-
-      const { data: { publicUrl } } = dataSupabase.storage
-        .from("editor-content")
-        .getPublicUrl(uploadData.path);
-
-      setForm(prev => ({ ...prev, image_url: publicUrl }));
+      const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD as string;
+      const preset = import.meta.env.VITE_CLOUDINARY_PRESET as string;
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("upload_preset", preset);
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, { method: "POST", body: fd });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error?.message || "Upload failed");
+      setForm(prev => ({ ...prev, image_url: json.secure_url }));
     } catch (err) {
       console.error("Upload error:", err);
     } finally {
@@ -107,7 +102,7 @@ export default function AdminDemoPrompts() {
     setSaving(true);
     try {
       if (editingPrompt) {
-        await dataSupabase
+        await authSupabase
           .from("demo_prompts")
           .update({
             title: form.title,
@@ -121,7 +116,7 @@ export default function AdminDemoPrompts() {
           })
           .eq("id", editingPrompt.id);
       } else {
-        await dataSupabase.from("demo_prompts").insert({
+        await authSupabase.from("demo_prompts").insert({
           title: form.title,
           prompt: form.prompt,
           category: form.category,
@@ -145,7 +140,7 @@ export default function AdminDemoPrompts() {
     if (!confirm("Are you sure you want to delete this prompt?")) return;
 
     try {
-      await dataSupabase.from("demo_prompts").delete().eq("id", id);
+      await authSupabase.from("demo_prompts").delete().eq("id", id);
       refetch();
     } catch (err) {
       console.error("Delete error:", err);
