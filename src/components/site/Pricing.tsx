@@ -440,7 +440,7 @@ export const Pricing = () => {
   };
 
   return (
-    <section id="pricing" className="relative py-20 sm:py-28 border-t border-border/30">
+    <section id="pricing" className="relative py-20 sm:py-28 ">
       <div className="absolute inset-0 -z-10 bg-gradient-hero opacity-60" />
 
       {/* Auth gate — shown when user is not logged in */}

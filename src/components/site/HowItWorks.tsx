@@ -29,7 +29,7 @@ export const HowItWorks = () => {
   const { t } = useLanguage();
 
   return (
-    <section className="relative py-20 sm:py-28 border-t border-border/30">
+    <section className="relative py-20 sm:py-28 ">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
 
         <div className="hiw-heading text-center mb-14">

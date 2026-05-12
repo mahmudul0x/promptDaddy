@@ -52,7 +52,7 @@ export const FAQ = () => {
   ];
 
   return (
-    <section id="faq" className="relative py-20 sm:py-28 border-t border-border/30">
+    <section id="faq" className="relative py-20 sm:py-28 ">
       <div className="faq-inner mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
           <p className="text-xs font-mono uppercase tracking-widest text-primary mb-3">{translate('faq.title')}</p>

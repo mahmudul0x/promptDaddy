@@ -158,7 +158,7 @@ export const ServicesGrid = () => {
                 <div className="flex items-center justify-between">
                   <span
                     className="text-xs font-bold px-2.5 py-1 rounded-lg"
-                    style={{ color: accent, background: `${accent}15`, border: `1px solid ${accent}30` }}
+                    style={{ color: accent, background: `${accent}20`, border: `1px solid ${accent}50` }}
                   >
                     {tag}
                   </span>

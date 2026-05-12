@@ -198,78 +198,63 @@ const STATS = [
 function StatCard({ stat, index }: { stat: typeof STATS[number]; index: number }) {
   const numRef = useRef<HTMLSpanElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
-  const hasAnimated = useRef(false);
 
   useEffect(() => {
     const card = cardRef.current;
     const num = numRef.current;
     if (!card || !num) return;
 
-    // start invisible
-    gsap.set(card, { opacity: 0, y: 20 });
+    const delay = 0.9 + index * 0.1; // after main timeline finishes
 
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && !hasAnimated.current) {
-        hasAnimated.current = true;
+    // fade in
+    gsap.fromTo(card,
+      { opacity: 0, y: 16 },
+      { opacity: 1, y: 0, duration: 0.45, delay, ease: "power2.out" }
+    );
 
-        // fade + slide in
-        gsap.to(card, { opacity: 1, y: 0, duration: 0.55, delay: index * 0.1, ease: "power2.out" });
-
-        // glow pulse
-        gsap.fromTo(card,
-          { boxShadow: `0 0 0px ${stat.color}00` },
-          { boxShadow: `0 0 24px ${stat.color}35`, duration: 0.9, delay: index * 0.1 + 0.3, ease: "power2.out",
-            onComplete: () => gsap.to(card, { boxShadow: `0 0 10px ${stat.color}15`, duration: 0.7 }) }
-        );
-
-        // count-up for numeric values
-        if (stat.raw !== null) {
-          const isK = stat.n.includes("K");
-          const target = isK ? stat.raw / 1000 : stat.raw;
-          const obj = { val: 0 };
-          gsap.to(obj, {
-            val: target,
-            duration: 1.8,
-            delay: index * 0.1 + 0.25,
-            ease: "power2.out",
-            onUpdate: () => {
-              const v = Math.floor(obj.val);
-              num.textContent = isK ? `${v}K+` : `${v}+`;
-            },
-            onComplete: () => { num.textContent = stat.n; },
-          });
-        }
-      }
-    }, { threshold: 0.3 });
-
-    observer.observe(card);
-    return () => observer.disconnect();
+    // count-up
+    if (stat.raw !== null) {
+      const isK = stat.n.includes("K");
+      const target = isK ? stat.raw / 1000 : stat.raw;
+      const obj = { val: 0 };
+      gsap.to(obj, {
+        val: target,
+        duration: 1.6,
+        delay: delay + 0.1,
+        ease: "power2.out",
+        onUpdate: () => {
+          const v = Math.floor(obj.val);
+          num.textContent = isK ? `${v}K+` : `${v}+`;
+        },
+        onComplete: () => { num.textContent = stat.n; },
+      });
+    }
   }, [stat, index]);
 
   return (
     <div
       ref={cardRef}
-      className="group relative rounded-2xl border overflow-hidden text-center transition-transform duration-300 hover:-translate-y-1 cursor-default"
-      style={{ borderColor: `${stat.color}25`, background: `${stat.color}08` }}
+      className="ih-stat-card group relative rounded-2xl border overflow-hidden text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-default"
+      style={{ borderColor: `${stat.color}40`, background: `${stat.color}10` }}
     >
       {/* top accent bar */}
-      <div className="h-[2px] w-full" style={{ background: `linear-gradient(90deg, transparent, ${stat.color}, transparent)` }} />
+      <div className="ih-stat-bar h-[2px] w-full" style={{ background: `linear-gradient(90deg, transparent, ${stat.color}, transparent)` }} />
 
       {/* hover glow orb */}
       <div className="absolute inset-0 pointer-events-none rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-        style={{ background: `radial-gradient(ellipse 80% 60% at 50% 0%, ${stat.color}12, transparent)` }} />
+        style={{ background: `radial-gradient(ellipse 80% 60% at 50% 0%, ${stat.color}18, transparent)` }} />
 
       <div className="px-5 py-5 relative">
         {/* number */}
-        <div className="text-2xl sm:text-3xl font-black mb-1 tabular-nums" style={{ color: stat.color }}>
+        <div className="ih-stat-num text-2xl sm:text-3xl font-black mb-1 tabular-nums" style={{ color: stat.color }}>
           <span ref={numRef}>{stat.raw !== null ? (stat.n.includes("K") ? "0K+" : "0+") : stat.n}</span>
         </div>
 
         {/* label */}
-        <div className="text-[12px] font-bold text-foreground/80 tracking-wide">{stat.label}</div>
+        <div className="ih-stat-label text-[12px] font-bold text-foreground/80 tracking-wide">{stat.label}</div>
 
         {/* desc */}
-        <div className="text-[10px] mt-0.5 font-medium" style={{ color: `${stat.color}90` }}>{stat.desc}</div>
+        <div className="ih-stat-desc text-[10px] mt-0.5 font-medium" style={{ color: `${stat.color}90` }}>{stat.desc}</div>
       </div>
     </div>
   );
@@ -335,6 +320,90 @@ export const IntroSection = () => {
           animation: gradientShift 4s ease infinite;
         }
         .cta-btn-primary:hover { opacity: 0.92; transform: translateY(-2px); }
+
+        /* ── Hero grid ── */
+        .ih-grid {
+          opacity: 0.03;
+          background-image:
+            linear-gradient(hsl(var(--foreground)) 1px, transparent 1px),
+            linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px);
+          background-size: 48px 48px;
+        }
+        .light .ih-grid {
+          opacity: 1;
+          background-image:
+            linear-gradient(hsl(252 80% 57% / 0.12) 1px, transparent 1px),
+            linear-gradient(90deg, hsl(252 80% 57% / 0.12) 1px, transparent 1px);
+          background-size: 48px 48px;
+          mask-image: radial-gradient(ellipse 80% 80% at 50% 40%, black 30%, transparent 100%);
+          -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 40%, black 30%, transparent 100%);
+        }
+
+        /* ── Light mode overrides ── */
+        .light .animated-gradient-text {
+          background: linear-gradient(135deg, #6d28d9, #4f46e5, #0ea5e9, #6d28d9);
+          background-size: 300% 300%;
+          animation: gradientShift 5s ease infinite;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        .light .cta-btn-primary {
+          background: linear-gradient(135deg, #6d28d9, #4f46e5) !important;
+          animation: none !important;
+        }
+        .light .terminal-glow {
+          box-shadow: 0 0 0 1px rgba(109,40,217,0.15), 0 8px 32px rgba(0,0,0,0.12) !important;
+        }
+        .light .ih-badge {
+          background: hsl(252 80% 57% / 0.1) !important;
+          border-color: hsl(252 80% 57% / 0.25) !important;
+          color: hsl(252 80% 45%) !important;
+        }
+
+        /* trust line */
+        .light .ih-trust {
+          color: hsl(224 30% 35%) !important;
+          font-weight: 500;
+        }
+        .light .ih-trust-dot { color: hsl(252 80% 55%) !important; }
+
+        /* "Works with" label */
+        .light .ih-works-label {
+          color: hsl(224 25% 45%) !important;
+          font-weight: 700;
+        }
+        .light .ih-works-line {
+          background: hsl(220 18% 80%) !important;
+          opacity: 1 !important;
+        }
+
+        /* tool pills in light mode — dark text on light tinted bg */
+        .light .ih-tool-pill {
+          background: hsl(220 18% 95%) !important;
+          border-color: hsl(220 18% 82%) !important;
+          color: hsl(224 40% 18%) !important;
+          font-weight: 600 !important;
+          box-shadow: 0 1px 3px hsl(224 20% 20% / 0.06) !important;
+        }
+        .light .ih-tool-pill:hover {
+          background: hsl(252 80% 57% / 0.08) !important;
+          border-color: hsl(252 80% 57% / 0.35) !important;
+          color: hsl(252 80% 40%) !important;
+        }
+
+        /* stat cards in light mode */
+        .light .ih-stat-card {
+          background: hsl(0 0% 100%) !important;
+          border-color: hsl(220 18% 84%) !important;
+          box-shadow: 0 2px 12px hsl(224 20% 20% / 0.07), 0 0 0 1px hsl(220 18% 88%) !important;
+        }
+        .light .ih-stat-num { color: hsl(252 80% 48%) !important; }
+        .light .ih-stat-label { color: hsl(224 40% 18%) !important; }
+        .light .ih-stat-desc { color: hsl(224 20% 48%) !important; }
+        .light .ih-stat-bar {
+          background: linear-gradient(90deg, transparent, hsl(252 80% 57% / 0.5), transparent) !important;
+        }
       `}</style>
 
       <section
@@ -355,10 +424,7 @@ export const IntroSection = () => {
         }} />
 
         {/* ── Grid pattern ── */}
-        <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 1, opacity: 0.03,
-          backgroundImage: "linear-gradient(hsl(var(--foreground)) 1px,transparent 1px),linear-gradient(90deg,hsl(var(--foreground)) 1px,transparent 1px)",
-          backgroundSize: "48px 48px",
-        }} />
+        <div className="ih-grid absolute inset-0 pointer-events-none" style={{ zIndex: 1 }} />
 
         {/* ── Main content ── */}
         <div className="relative mx-auto max-w-3xl px-4 sm:px-6 text-center" style={{ zIndex: 4 }}>
@@ -435,16 +501,20 @@ export const IntroSection = () => {
             </Link>
           </div>
 
-          <p className="mt-2 text-[11px] text-muted-foreground/50">
-            No traps · Instant access · bKash / Nagad accepted
+          <p className="ih-trust mt-2 text-[11px] text-muted-foreground/50">
+            No traps
+            <span className="ih-trust-dot mx-1.5 opacity-60">·</span>
+            Instant access
+            <span className="ih-trust-dot mx-1.5 opacity-60">·</span>
+            bKash / Nagad accepted
           </p>
 
           {/* Works with */}
           <div className="ih-tools mt-8 flex flex-col items-center gap-3">
             <div className="flex items-center gap-3">
-              <div className="h-px w-12 bg-gradient-to-r from-transparent to-border/50" />
-              <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-foreground/40">Works with</span>
-              <div className="h-px w-12 bg-gradient-to-l from-transparent to-border/50" />
+              <div className="ih-works-line h-px w-12 bg-gradient-to-r from-transparent to-border/50" />
+              <span className="ih-works-label text-[11px] font-bold uppercase tracking-[0.2em] text-foreground/40">Works with</span>
+              <div className="ih-works-line h-px w-12 bg-gradient-to-l from-transparent to-border/50" />
             </div>
             <div className="flex flex-wrap justify-center gap-2">
               {TOOLS.map((tool, i) => {
@@ -453,7 +523,7 @@ export const IntroSection = () => {
                 return (
                   <span
                     key={tool}
-                    className="px-3.5 py-1.5 rounded-full text-[12px] font-semibold border backdrop-blur-sm transition-all duration-200 cursor-default"
+                    className="ih-tool-pill px-3.5 py-1.5 rounded-full text-[12px] font-semibold border backdrop-blur-sm transition-all duration-200 cursor-default"
                     style={{
                       background: `${color}12`,
                       borderColor: `${color}35`,

@@ -131,7 +131,7 @@ function PromptCard({ prompt, onOpen }: { prompt: DemoPrompt; onOpen: () => void
             alt={prompt.title}
             className="w-full h-44 object-cover transition-transform duration-500 group-hover:scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-card/90 via-card/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
           <span className="absolute top-3 right-3 text-[10px] font-bold text-emerald-400 bg-black/40 border border-emerald-400/30 px-2 py-0.5 rounded-full backdrop-blur-sm">FREE</span>
         </div>
       ) : (
