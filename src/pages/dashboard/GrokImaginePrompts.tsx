@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Sparkles, Copy, Check, X, ExternalLink, Search, Image, Video } from 'lucide-react';
 import { useGrokImaginePrompts } from '@/hooks/useData';
 import { PageHeader } from '@/components/dashboard/PageHeader';
@@ -299,12 +300,20 @@ const GROK_CATEGORIES = [
 
 export default function GrokImaginePrompts() {
   const { data: items = [], isLoading } = useGrokImaginePrompts();
+  const location = useLocation();
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState<SortOpt>('newest');
   const [mediaOnly, setMediaOnly] = useState(false);
   const [videoOnly, setVideoOnly] = useState(false);
   const [category, setCategory] = useState('All');
   const [selected, setSelected] = useState<GrokImaginePrompt | null>(null);
+
+  useEffect(() => {
+    const id = (location.state as { openId?: number })?.openId;
+    if (!id || !items.length) return;
+    const found = items.find(i => i.id === id);
+    if (found) setSelected(found);
+  }, [location.state, items]);
 
   const filtered = useMemo(() => {
     let list = items;

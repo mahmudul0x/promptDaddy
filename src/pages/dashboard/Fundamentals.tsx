@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { GraduationCap, BookOpen, Lock, X, ExternalLink, Heart } from 'lucide-react';
 import { useGuides } from '@/hooks/useData';
 import { FilterBar } from '@/components/dashboard/FilterBar';
@@ -646,6 +647,7 @@ const EXTRA_GUIDES: Guide[] = [
 export default function Fundamentals() {
   const { user } = useAuth();
   const { data: guides = [], isLoading } = useGuides();
+  const location = useLocation();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
   const [selected, setSelected] = useState<Guide | null>(null);
@@ -654,6 +656,13 @@ export default function Fundamentals() {
   const allGuides = useMemo(() => {
     return [...guides, ...EXTRA_GUIDES];
   }, [guides]);
+
+  useEffect(() => {
+    const id = (location.state as { openId?: string })?.openId;
+    if (!id || !allGuides.length) return;
+    const found = allGuides.find(g => g.id === id);
+    if (found) setSelected(found);
+  }, [location.state, allGuides]);
 
   const categories = useMemo(
     () => [...new Set(allGuides.map((g) => g.category).filter(Boolean))].sort(),

@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Video, Play, ExternalLink, Lock, FileText, X, Heart, LoaderCircle } from 'lucide-react';
 import { useVideos } from '@/hooks/useData';
 import { FilterBar } from '@/components/dashboard/FilterBar';
@@ -221,10 +222,18 @@ function ContentModal({ item, onClose }: { item: VideoType; onClose: () => void 
 
 export default function Videos() {
   const { data: items = [], isLoading } = useVideos();
+  const location = useLocation();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
   const [activeSort, setActiveSort] = useState('newest');
   const [selected, setSelected] = useState<VideoType | null>(null);
+
+  useEffect(() => {
+    const id = (location.state as { openId?: string })?.openId;
+    if (!id || !items.length) return;
+    const found = items.find(i => i.id === id);
+    if (found) setSelected(found);
+  }, [location.state, items]);
 
   const categories = useMemo(
     () => [...new Set(items.map((i) => i.category).filter(Boolean))].sort(),

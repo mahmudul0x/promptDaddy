@@ -1,4 +1,5 @@
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   Globe, Copy, Check, Search, X, ExternalLink,
   Tag, User, Loader2, ChevronLeft, ArrowUpRight,
@@ -301,9 +302,17 @@ function getAllTags(prompts: WebpagePrompt[]) {
 /* ── Page ─────────────────────────────────────────────────── */
 export default function WebpagePrompts() {
   const { data: prompts = [], isLoading, error } = useWebpagePrompts();
+  const location = useLocation();
   const [search, setSearch] = useState('');
   const [activeTag, setActiveTag] = useState<string | null>(null);
   const [selected, setSelected] = useState<WebpagePrompt | null>(null);
+
+  useEffect(() => {
+    const id = (location.state as { openId?: number })?.openId;
+    if (!id || !prompts.length) return;
+    const found = prompts.find(p => p.id === id);
+    if (found) setSelected(found);
+  }, [location.state, prompts]);
 
   const topTags = useMemo(() => getAllTags(prompts), [prompts]);
 

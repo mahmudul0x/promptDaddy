@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Cpu, ExternalLink, Lock, X, Heart } from 'lucide-react';
 import { useCustomGpts } from '@/hooks/useData';
 import { FilterBar } from '@/components/dashboard/FilterBar';
@@ -151,9 +152,17 @@ function GptModal({ item, onClose }: { item: CustomGpt; onClose: () => void }) {
 export default function CustomGpts() {
   const { user } = useAuth();
   const { data: items = [], isLoading } = useCustomGpts();
+  const location = useLocation();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
   const [selected, setSelected] = useState<CustomGpt | null>(null);
+
+  useEffect(() => {
+    const id = (location.state as { openId?: string })?.openId;
+    if (!id || !items.length) return;
+    const found = items.find(i => i.id === id);
+    if (found) setSelected(found);
+  }, [location.state, items]);
 
   const categories = useMemo(
     () => [...new Set(items.map((i) => i.category).filter(Boolean))].sort(),

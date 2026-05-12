@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useRef, useCallback, useDeferredValue } from 'react';
+import { useLocation } from 'react-router-dom';
 import { MessageSquare, SlidersHorizontal } from 'lucide-react';
 import { usePrompts } from '@/hooks/useData';
 import { ContentCard } from '@/components/dashboard/ContentCard';
@@ -22,7 +23,8 @@ const ACCESS_OPTIONS: AccessFilter[] = ['All', 'Free', 'Premium'];
 export default function LlmPrompts() {
   const { user } = useAuth();
   const { data: prompts = [], isLoading } = usePrompts();
-  
+  const location = useLocation();
+
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
   const [access, setAccess] = useState<AccessFilter>('All');
@@ -30,6 +32,13 @@ export default function LlmPrompts() {
   const [featured, setFeatured] = useState(false);
   const [recommended, setRecommended] = useState(false);
   const [selected, setSelected] = useState<Prompt | null>(null);
+
+  useEffect(() => {
+    const id = (location.state as { openId?: string })?.openId;
+    if (!id || !prompts.length) return;
+    const found = prompts.find(p => p.id === id);
+    if (found) setSelected(found);
+  }, [location.state, prompts]);
   const [displayCount, setDisplayCount] = useState(48);
   const sentinelRef = useRef<HTMLDivElement>(null);
 

@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Zap, Lock, Eye, X, ExternalLink, Heart } from 'lucide-react';
 import { useAutomationTemplates } from '@/hooks/useData';
 import { FilterBar } from '@/components/dashboard/FilterBar';
@@ -202,9 +203,17 @@ function AutomationModal({ item, onClose }: { item: AutomationTemplate; onClose:
 export default function Automation() {
   const { user } = useAuth();
   const { data: items = [], isLoading } = useAutomationTemplates();
+  const location = useLocation();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
   const [selected, setSelected] = useState<AutomationTemplate | null>(null);
+
+  useEffect(() => {
+    const id = (location.state as { openId?: string })?.openId;
+    if (!id || !items.length) return;
+    const found = items.find(i => i.id === id);
+    if (found) setSelected(found);
+  }, [location.state, items]);
 
   const categories = useMemo(
     () => [...new Set(items.map((i) => i.category).filter(Boolean))].sort(),

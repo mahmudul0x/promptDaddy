@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Wand2, Copy, Check, X, ExternalLink, Search, Image, Star, Eye, ThumbsUp, Trophy } from 'lucide-react';
 import { useGptImagePrompts } from '@/hooks/useData';
 import { PageHeader } from '@/components/dashboard/PageHeader';
@@ -365,12 +366,20 @@ const SORT_OPTIONS: { value: SortOpt; label: string }[] = [
 
 export default function GptImagePrompts() {
   const { data: items = [], isLoading } = useGptImagePrompts();
+  const location = useLocation();
 
   const [search,    setSearch]    = useState('');
   const [sort,      setSort]      = useState<SortOpt>('rank');
   const [model,     setModel]     = useState('All');
   const [category,  setCategory]  = useState('All');
   const [selected,  setSelected]  = useState<GptImagePrompt | null>(null);
+
+  useEffect(() => {
+    const id = (location.state as { openId?: string })?.openId;
+    if (!id || !items.length) return;
+    const found = items.find(i => i.id === id);
+    if (found) setSelected(found);
+  }, [location.state, items]);
 
   /* Derive unique models and categories from data */
   const models = useMemo(() => {

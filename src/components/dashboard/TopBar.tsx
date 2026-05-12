@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { Search, Menu, X, ChevronRight, Home, PanelLeft } from 'lucide-react';
+import { useLocation, Link } from 'react-router-dom';
+import { Menu, ChevronRight, Home, PanelLeft } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { GlobalSearch } from '@/components/dashboard/GlobalSearch';
 import { cn } from '@/lib/utils';
 
 const CRUMBS: Record<string, string> = {
@@ -32,9 +32,6 @@ interface TopBarProps {
 }
 
 export function TopBar({ onMenuClick, onSidebarToggle, sidebarCollapsed }: TopBarProps) {
-  const [search, setSearch] = useState('');
-  const [focused, setFocused] = useState(false);
-  const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
 
@@ -42,14 +39,6 @@ export function TopBar({ onMenuClick, onSidebarToggle, sidebarCollapsed }: TopBa
   const isArticleDetail = location.pathname.startsWith('/dashboard/ai-news/') && location.pathname !== '/dashboard/ai-news';
   const currentPage = CRUMBS[location.pathname] ?? (isArticleDetail ? 'Article' : 'Dashboard');
   const initial = user?.name?.charAt(0).toUpperCase() ?? 'U';
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (search.trim()) {
-      navigate(`/dashboard/search?q=${encodeURIComponent(search.trim())}`);
-      setSearch('');
-    }
-  };
 
   return (
     <header
@@ -101,45 +90,8 @@ export function TopBar({ onMenuClick, onSidebarToggle, sidebarCollapsed }: TopBa
         )}
       </div>
 
-      {/* Search */}
-      <form onSubmit={handleSearch} className="flex-1 min-w-0 max-w-sm mx-auto">
-        <div
-          className="relative flex items-center h-8 rounded-lg transition-all duration-200"
-          style={{
-            background: focused ? 'hsl(var(--muted))' : 'hsl(var(--secondary))',
-            border: `1px solid ${focused ? 'hsl(var(--primary) / 0.4)' : 'hsl(var(--border))'}`,
-            boxShadow: focused ? '0 0 0 3px hsl(var(--primary) / 0.08)' : 'none',
-          }}
-        >
-          <Search
-            className="absolute left-2.5 text-muted-foreground/50 pointer-events-none"
-            style={{ height: 13, width: 13 }}
-          />
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            onFocus={() => setFocused(true)}
-            onBlur={() => setFocused(false)}
-            placeholder="Search everything..."
-            className="w-full bg-transparent pl-8 pr-16 text-[12.5px] text-foreground placeholder:text-muted-foreground/40 outline-none"
-          />
-          {search ? (
-            <button
-              type="button"
-              onClick={() => setSearch('')}
-              className="absolute right-2 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <X style={{ height: 12, width: 12 }} />
-            </button>
-          ) : (
-            <div className="absolute right-2 flex items-center gap-0.5 pointer-events-none">
-              <kbd className="text-[9px] text-muted-foreground/40 font-mono bg-white/[0.04] border border-border/40 rounded px-1 py-0.5 leading-none">
-                K
-              </kbd>
-            </div>
-          )}
-        </div>
-      </form>
+      {/* Global search */}
+      <GlobalSearch />
 
       {/* Right */}
       <div className="ml-auto flex items-center gap-2">
