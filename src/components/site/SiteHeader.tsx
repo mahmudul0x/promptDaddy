@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Sparkles, LogIn, LayoutDashboard, Globe, Menu, X } from 'lucide-react';
+import { Sparkles, LayoutDashboard, Globe, Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
@@ -156,17 +156,9 @@ export const SiteHeader = () => {
                   </Link>
                 </Button>
               ) : (
-                <>
-                  <Button asChild variant="ghost" size="sm" className="hidden sm:flex text-muted-foreground hover:text-foreground gap-1.5">
-                    <Link to="/login">
-                      <LogIn className="h-3.5 w-3.5" />
-                      {t('nav.signIn')}
-                    </Link>
-                  </Button>
-                  <Button asChild variant="hero" size="sm" className="hidden sm:flex">
-                    <Link to="/register">{t('nav.getStarted')}</Link>
-                  </Button>
-                </>
+                <Button asChild variant="hero" size="sm" className="hidden sm:flex">
+                  <Link to="/register">{t('nav.getStarted')}</Link>
+                </Button>
               )}
 
               {/* Mobile hamburger */}
@@ -201,17 +193,9 @@ export const SiteHeader = () => {
                     </Link>
                   </Button>
                 ) : (
-                  <>
-                    <Button asChild variant="ghost" size="sm">
-                      <Link to="/login" onClick={() => setMobileOpen(false)}>
-                        <LogIn className="h-3.5 w-3.5 mr-1.5" />
-                        {t('nav.signIn')}
-                      </Link>
-                    </Button>
-                    <Button asChild variant="hero" size="sm">
-                      <Link to="/register" onClick={() => setMobileOpen(false)}>{t('nav.getStarted')}</Link>
-                    </Button>
-                  </>
+                  <Button asChild variant="hero" size="sm">
+                    <Link to="/register" onClick={() => setMobileOpen(false)}>{t('nav.getStarted')}</Link>
+                  </Button>
                 )}
               </div>
             </div>

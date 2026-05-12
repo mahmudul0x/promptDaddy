@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Sparkles, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { SiteHeader } from '@/components/site/SiteHeader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -64,6 +65,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <SiteHeader />
       {/* Background glows */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />

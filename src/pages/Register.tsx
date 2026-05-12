@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Sparkles, Eye, EyeOff, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { SiteHeader } from '@/components/site/SiteHeader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -61,6 +62,7 @@ export default function Register() {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <SiteHeader />
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
         <div className="absolute bottom-1/3 left-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
