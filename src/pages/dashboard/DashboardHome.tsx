@@ -3,7 +3,7 @@ import {
   MessageSquare, Image, Zap, Bot, Cpu, Video,
   GraduationCap, Wand2, Sparkles, Search, ArrowRight,
   BookOpen, Heart, TrendingUp, Flame, Newspaper, Star,
-  Crown, Infinity, BriefcaseBusiness, Lock, Eye, Activity, Clock, Banana, Film,
+  Crown, Infinity, BriefcaseBusiness, Lock, Eye, Activity, Clock, Banana, Film, Globe,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useFavorites } from '@/contexts/FavoritesContext';
@@ -25,6 +25,7 @@ const STAT_DEFS = [
   { label: 'Videos', key: 'videos' as const, icon: Video, to: '/dashboard/videos', accent: '#ec4899' },
   { label: 'Starter Kit', key: 'ai_starter_kit_prompts' as const, icon: BriefcaseBusiness, to: '/dashboard/ai-starter-kit', accent: '#fb923c' },
   { label: 'Guides', key: 'guides' as const, icon: GraduationCap, to: '/dashboard/fundamentals', accent: '#fbbf24' },
+  { label: 'Webpage Prompts', key: 'webpage_prompts' as const, icon: Globe, to: '/dashboard/webpage-prompts', accent: '#60a5fa' },
 ];
 
 const TOOLS = [
@@ -92,6 +93,7 @@ const BROWSE_DEFS = [
   { to: '/dashboard/videos', icon: Video, label: 'Videos', countKey: 'videos' as const, desc: 'Video Tutorials', accent: '#ec4899' },
   { to: '/dashboard/fundamentals', icon: GraduationCap, label: 'Guides', countKey: 'guides' as const, desc: 'AI Education', accent: '#fbbf24' },
   { to: '/dashboard/ai-models', icon: Star, label: 'AI Model Picks', countKey: null, staticCount: 13 as const, desc: 'Best Models', accent: '#f59e0b' },
+  { to: '/dashboard/webpage-prompts', icon: Globe, label: 'Webpage Prompts', countKey: 'webpage_prompts' as const, desc: 'Build any website in 1 click', accent: '#60a5fa' },
 ];
 
 type StatDef = typeof STAT_DEFS[number];

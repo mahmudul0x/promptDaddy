@@ -212,7 +212,7 @@ export const useContentCounts = () =>
   useQuery<Record<string, number>>({
     queryKey: ['content_counts'],
     queryFn: async () => {
-      const [prompts, imagePrompts, videos, guides, customGpts, automationTemplates, claudeSkills, gptimagePrompts, grokImaginePrompts, nanoBananaPrompts, seedancePrompts, aiStarterKitPrompts, aiStarterKitSkills] =
+      const [prompts, imagePrompts, videos, guides, customGpts, automationTemplates, claudeSkills, gptimagePrompts, grokImaginePrompts, nanoBananaPrompts, seedancePrompts, aiStarterKitPrompts, aiStarterKitSkills, webpagePrompts] =
         await Promise.all([
           dataSupabase.from('prompts').select('id', { count: 'exact', head: true }),
           dataSupabase.from('image_prompts').select('id', { count: 'exact', head: true }),
@@ -227,6 +227,7 @@ export const useContentCounts = () =>
           dataSupabase.from('seedance_prompts').select('id', { count: 'exact', head: true }),
           dataSupabase.from('ai_starter_kit_prompts').select('id', { count: 'exact', head: true }),
           dataSupabase.from('ai_starter_kit_skills').select('id', { count: 'exact', head: true }),
+          dataSupabase.from('webpage_prompts').select('id', { count: 'exact', head: true }),
         ]);
       return {
         prompts: prompts.count || 0,
@@ -242,6 +243,7 @@ export const useContentCounts = () =>
         seedance_prompts: seedancePrompts.count || 0,
         ai_starter_kit_prompts: aiStarterKitPrompts.count || 0,
         ai_starter_kit_skills: aiStarterKitSkills.count || 0,
+        webpage_prompts: webpagePrompts.count || 0,
       };
     },
     staleTime: 2 * 60 * 1000,

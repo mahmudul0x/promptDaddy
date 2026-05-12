@@ -54,6 +54,9 @@ const TRANSLATIONS: translations = {
   
   "starter.title": { en: "Starter Kit", bn: "স্টার্টার কিট", hi: "स्टार्टर किट", es: "Kit de inicio", fr: "Kit de démarrage", ar: "مجموعة البدء" },
   "starter.desc": { en: "500+ prompts & 20 Claude Skills structured for solopreneurs.", bn: "৫০০+ প্রম্পট ও ২০ ক্লড স্কিলস সোলোপ্রেনিওরদের জন্য স্ট্রাকচার্ড।", hi: "500+ प्रॉम्प्ट्स और 20 क्लॉड स्किल्स।", es: "500+ prompts y 20 habilidades Claude.", fr: "500+ prompts et 20 compétences Claude.", ar: "500+ أوامر و20 مهارات Claude." },
+
+  "webpage.title": { en: "Webpage Prompts", bn: "ওয়েবপেজ প্রম্পট", hi: "वेबपेज प्रॉम्प्ट्स", es: "Prompts Web", fr: "Prompts Web", ar: "أوامر صفحات الويب" },
+  "webpage.desc": { en: "49 battle-tested prompts to build stunning websites, landing pages & UI — just copy, paste and go.", bn: "৪৯টি প্রম্পট দিয়ে যেকোনো ওয়েবসাইট, ল্যান্ডিং পেজ ও UI বানান — শুধু কপি করুন, পেস্ট করুন।", hi: "49 प्रॉम्प्ट से website, landing page & UI बनाएं।", es: "49 prompts para crear websites y landing pages.", fr: "49 prompts pour créer des sites web et landing pages.", ar: "49 أمرًا لبناء مواقع وصفحات هبوط." },
   
   "cta.getAccess": { en: "Get Full Access — ৳199/mo", bn: "সম্পূর্ণ অ্যাক্সেস পান — ৳199/মাস", hi: "पूर्ण पहुंच प्राप्त करें — ₹199/माह", es: "Obtener acceso completo — $9.99/mes", fr: "Accès complet — 9.99$/mois", ar: "الحصول على الوصول الكامل — 9.99$/شهر" },
   "cta.seePlans": { en: "see all plans including Lifetime", bn: "সব প্ল্যান দেখুন সহ লাইফটাইম", hi: "सभी योजनाएं देखें", es: "ver todos los planes", fr: "voir tous les forfaits", ar: "عرض جميع الخطط" },

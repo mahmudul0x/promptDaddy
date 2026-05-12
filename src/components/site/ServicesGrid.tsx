@@ -1,7 +1,7 @@
 import {
   MessageSquare, Bot, Image, BriefcaseBusiness,
   Workflow, Search, Wand2, Video, ArrowRight,
-  Sparkles, Banana, Film,
+  Sparkles, Banana, Film, Globe,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -80,6 +80,15 @@ const SERVICES = [
     accent: "#fb923c",
     badge: "Beginner Friendly",
     img: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=600&q=80&auto=format&fit=crop",
+  },
+  {
+    icon: Globe,
+    titleKey: "webpage.title",
+    descKey: "webpage.desc",
+    tag: "49 prompts",
+    accent: "#60a5fa",
+    badge: "New",
+    img: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=600&q=80&auto=format&fit=crop",
   },
 ];
 

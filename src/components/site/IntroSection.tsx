@@ -482,8 +482,9 @@ export const IntroSection = () => {
 
           {/* Sub copy */}
           <p className="ih-sub mt-5 text-sm sm:text-[0.97rem] text-muted-foreground max-w-lg mx-auto leading-relaxed">
-            The ultimate AI toolkit for creators, marketers & developers.{" "}
-            <span className="text-foreground font-medium">Copy. Paste. Get results.</span>
+            The ultimate AI toolkit for creators, marketers & developers — including{" "}
+            <span className="text-foreground font-medium">49 webpage prompts</span> to build any website or UI in one click.{" "}
+            <span className="text-foreground font-medium">Copy. Paste. Go live.</span>
           </p>
 
           {/* CTAs */}
