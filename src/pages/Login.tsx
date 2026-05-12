@@ -64,7 +64,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 pt-28">
       <SiteHeader />
       {/* Background glows */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -73,15 +73,9 @@ export default function Login() {
       </div>
 
       <div className="relative w-full max-w-md">
-        {/* Logo */}
+        {/* Title */}
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2.5 group">
-            <span className="inline-flex items-center justify-center h-10 w-10 rounded-xl bg-gradient-primary shadow-glow">
-              <Sparkles className="h-5 w-5 text-primary-foreground" strokeWidth={2.5} />
-            </span>
-            <span className="font-bold text-xl text-foreground">PromptLand</span>
-          </Link>
-          <p className="mt-4 text-muted-foreground text-sm">Sign in to access your dashboard</p>
+          <p className="text-muted-foreground text-sm">Sign in to access your PromptLand dashboard</p>
         </div>
 
         {/* Card */}
