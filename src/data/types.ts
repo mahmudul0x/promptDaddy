@@ -380,6 +380,7 @@ export interface WebpagePrompt {
   source_tweet: string | null;
   tags: string[] | null;
   model: string | null;
+  image_url: string | null;
   created_at: string;
 }
 
