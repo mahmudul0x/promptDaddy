@@ -14,6 +14,7 @@ const TRANSLATIONS: translations = {
   "nav.pricing": { en: "Pricing", bn: "মূল্য", hi: "मूल्य निर्धारण", es: "Precios", fr: "Tarifs", ar: "التسعير" },
   "nav.faq": { en: "FAQ", bn: "প্রশ্নাবলী", hi: "सामान्य प्रश्न", es: "Preguntas", fr: "FAQ", ar: "الأسئلة الشائعة" },
   "nav.contact": { en: "Contact", bn: "যোগাযোগ", hi: "संपर्क", es: "Contacto", fr: "Contact", ar: "اتصل بنا" },
+  "nav.usecases": { en: "Use Cases", bn: "ব্যবহারসমূহ", hi: "उपयोग", es: "Casos de uso", fr: "Cas d'usage", ar: "حالات الاستخدام" },
   "nav.demo": { en: "Demo", bn: "ডেমো", hi: "डेमो", es: "Demo", fr: "Demo", ar: "تجربة" },
   "nav.signIn": { en: "Sign In", bn: "সাইন ইন", hi: "साइन इन", es: "Iniciar sesión", fr: "Connexion", ar: "تسجيل الدخول" },
   "nav.getStarted": { en: "Get Started", bn: "শুরু করুন", hi: "शुरू करें", es: "Comenzar", fr: "Commencer", ar: "ابدأ الآن" },

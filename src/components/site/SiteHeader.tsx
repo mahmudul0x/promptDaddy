@@ -16,12 +16,12 @@ const LANGUAGES: { code: Language; label: string; flag: string }[] = [
 ];
 
 const NAV_LINKS = [
-  { href: '/',         labelKey: 'nav.home'     },
-  { href: '/#services',labelKey: 'nav.services' },
-  { href: '/#pricing', labelKey: 'nav.pricing'  },
-  { href: '/#faq',     labelKey: 'nav.faq'      },
-  { href: '/#contact', labelKey: 'nav.contact'  },
-  { href: '/demo',     labelKey: 'nav.demo'      },
+  { href: '/',            labelKey: 'nav.home'      },
+  { href: '/#services',   labelKey: 'nav.services'  },
+  { href: '/use-cases',   labelKey: 'nav.usecases'  },
+  { href: '/#pricing',    labelKey: 'nav.pricing'   },
+  { href: '/#faq',        labelKey: 'nav.faq'       },
+  { href: '/demo',        labelKey: 'nav.demo'      },
 ];
 
 export const SiteHeader = () => {

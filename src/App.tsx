@@ -11,6 +11,7 @@ import { LanguageProvider } from '@/contexts/LanguageContext';
 
 import Index from './pages/Index';
 import Demo from './pages/Demo';
+import { UseCasesPage, UseCaseDetailPage } from './pages/UseCases';
 import NotFound from './pages/NotFound';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
@@ -69,6 +70,8 @@ const App = () => (
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
+              <Route path="/use-cases" element={<UseCasesPage />} />
+              <Route path="/use-cases/:slug" element={<UseCaseDetailPage />} />
 
               {/* Dashboard (protected via DashboardLayout) */}
               <Route path="/dashboard" element={<DashboardLayout />}>
