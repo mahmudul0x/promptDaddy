@@ -310,6 +310,11 @@ export default function AdminDashboard() {
   const [demoForm, setDemoForm]                   = useState<DemoFormState>({
     title: '', prompt: '', category: 'Email', image_url: '', test_url: 'https://chat.openai.com', sort_order: 1, is_active: true,
   });
+  // Demo categories
+  const [demoCategories, setDemoCategories]       = useState<string[]>(DEMO_CATEGORIES);
+  const [newDemoCat, setNewDemoCat]               = useState('');
+  const [demoCatSaving, setDemoCatSaving]         = useState(false);
+  const [showCatManager, setShowCatManager]       = useState(false);
 
   // Compute isAdmin after all hooks
   const isAdmin = useMemo(() => 
@@ -369,12 +374,28 @@ export default function AdminDashboard() {
       const { data, error } = await supabase.from('demo_prompts').select('*').order('sort_order', { ascending: true });
       if (error) throw error;
       setDemoPrompts((data || []) as DemoPromptRow[]);
+      // also sync categories from existing prompts
+      if (data && data.length > 0) {
+        const existing = Array.from(new Set((data as DemoPromptRow[]).map(r => r.category)));
+        setDemoCategories(prev => Array.from(new Set([...DEMO_CATEGORIES, ...existing, ...prev])));
+      }
     } catch (e) {
       console.error('fetchDemoPrompts error:', e);
     } finally {
       setDemoLoading(false);
     }
   }, []);
+
+  const addDemoCategory = () => {
+    const name = newDemoCat.trim();
+    if (!name || demoCategories.includes(name)) return;
+    setDemoCategories(prev => [...prev, name]);
+    setNewDemoCat('');
+  };
+
+  const removeDemoCategory = (cat: string) => {
+    setDemoCategories(prev => prev.filter(c => c !== cat));
+  };
 
   /* ── Effects ── */
   // Initial admin list fetch
@@ -2176,12 +2197,54 @@ export default function AdminDashboard() {
                     className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-all disabled:opacity-50">
                     <RefreshCw className={`h-4 w-4 ${demoLoading ? 'animate-spin' : ''}`} />
                   </button>
+                  <button onClick={() => setShowCatManager(v => !v)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-secondary text-muted-foreground hover:text-foreground border border-border/50 transition-all">
+                    <Tag className="h-3.5 w-3.5" /> Categories
+                  </button>
                   <button onClick={() => openDemoForm()}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-violet-500/15 text-violet-400 hover:bg-violet-500/25 border border-violet-500/20 transition-all">
                     <Plus className="h-3.5 w-3.5" /> Add Prompt
                   </button>
                 </div>
               </div>
+
+              {/* Category Manager */}
+              {showCatManager && (
+                <div className="rounded-2xl border border-border/50 bg-card/60 p-5">
+                  <p className="text-xs font-bold text-foreground mb-3 flex items-center gap-2">
+                    <Tag className="h-3.5 w-3.5 text-violet-400" /> Manage Categories
+                  </p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {demoCategories.map(cat => (
+                      <span key={cat} className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-violet-500/10 text-violet-400 border border-violet-500/20">
+                        {cat}
+                        {!DEMO_CATEGORIES.includes(cat) && (
+                          <button onClick={() => removeDemoCategory(cat)} className="hover:text-red-400 transition-colors">
+                            <X className="h-2.5 w-2.5" />
+                          </button>
+                        )}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      value={newDemoCat}
+                      onChange={e => setNewDemoCat(e.target.value)}
+                      onKeyDown={e => e.key === 'Enter' && addDemoCategory()}
+                      placeholder="New category name…"
+                      className="flex-1 px-3 py-2 rounded-xl bg-secondary border border-border/50 text-xs text-foreground placeholder:text-muted-foreground/40 outline-none focus:border-violet-400/40 transition-colors"
+                    />
+                    <button
+                      onClick={addDemoCategory}
+                      disabled={!newDemoCat.trim()}
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-violet-500/15 text-violet-400 hover:bg-violet-500/25 border border-violet-500/20 transition-all disabled:opacity-40"
+                    >
+                      <Plus className="h-3.5 w-3.5" /> Add
+                    </button>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground/50 mt-2">Default categories cannot be removed. Custom categories are session-only.</p>
+                </div>
+              )}
 
               {demoLoading ? (
                 <div className="flex items-center justify-center py-16">
@@ -2269,7 +2332,7 @@ export default function AdminDashboard() {
                         <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5 block">Category</label>
                         <select value={demoForm.category} onChange={e => setDemoForm(f => ({ ...f, category: e.target.value }))}
                           className="w-full px-3 py-2.5 rounded-xl bg-secondary border border-border/50 text-xs text-foreground outline-none focus:border-violet-400/40 transition-colors">
-                          {DEMO_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                          {demoCategories.map(c => <option key={c} value={c}>{c}</option>)}
                         </select>
                       </div>
                       <div>
