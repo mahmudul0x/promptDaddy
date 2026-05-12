@@ -234,11 +234,19 @@ function PromptCard({ p, onClick }: { p: WebpagePrompt; onClick: () => void }) {
 
       {/* content */}
       <div className="p-4">
-        {/* author only */}
+        {/* author */}
         {p.author && (
           <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground mb-3">
             <User className="h-3 w-3 shrink-0" />
-            <span className="font-medium truncate">{p.author}</span>
+            {p.author_x_url ? (
+              <a href={p.author_x_url} target="_blank" rel="noreferrer"
+                onClick={e => e.stopPropagation()}
+                className="font-medium truncate hover:text-sky-400 transition-colors">
+                {p.author}
+              </a>
+            ) : (
+              <span className="font-medium truncate">{p.author}</span>
+            )}
           </div>
         )}
 
