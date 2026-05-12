@@ -1,12 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { Check, ArrowRight, Zap, Infinity, X, Copy, CheckCheck, ChevronLeft, Eye, EyeOff } from "lucide-react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const SUPABASE_URL  = import.meta.env.VITE_SUPABASE_URL as string;
 const SUPABASE_ANON = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
@@ -419,33 +415,10 @@ function PaymentModal({ plan, onClose }: { plan: Plan; onClose: () => void }) {
 /* ── Pricing Section ─────────────────────────────────────── */
 export const Pricing = () => {
   const { isAuthenticated } = useAuth();
-  const sectionRef = useRef<HTMLElement>(null);
   const { t } = useLanguage();
 
   const [activePlan,   setActivePlan]   = useState<PlanKey | null>(null);
   const [authGatePlan, setAuthGatePlan] = useState<PlanKey | null>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        ".pricing-heading",
-        { opacity: 0, y: 28 },
-        {
-          opacity: 1, y: 0, duration: 0.65,
-          scrollTrigger: { trigger: ".pricing-heading", start: "top 85%", once: true },
-        }
-      );
-      gsap.fromTo(
-        ".pricing-card",
-        { opacity: 0, y: 40, scale: 0.97 },
-        {
-          opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.12, ease: "power2.out",
-          scrollTrigger: { trigger: ".pricing-cards", start: "top 80%", once: true },
-        }
-      );
-    }, sectionRef);
-    return () => ctx.revert();
-  }, []);
 
   // After Google OAuth redirect, auto-open the pending plan modal
   useEffect(() => {
@@ -467,7 +440,7 @@ export const Pricing = () => {
   };
 
   return (
-    <section id="pricing" ref={sectionRef} className="relative py-20 sm:py-28 border-t border-border/30">
+    <section id="pricing" className="relative py-20 sm:py-28 border-t border-border/30">
       <div className="absolute inset-0 -z-10 bg-gradient-hero opacity-60" />
 
       {/* Auth gate — shown when user is not logged in */}

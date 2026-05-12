@@ -1,10 +1,5 @@
-import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { UserPlus, CreditCard, Zap } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const STEPS = [
   {
@@ -31,45 +26,10 @@ const STEPS = [
 ];
 
 export const HowItWorks = () => {
-  const sectionRef = useRef<HTMLElement>(null);
   const { t } = useLanguage();
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        ".hiw-heading",
-        { opacity: 0, y: 28 },
-        {
-          opacity: 1, y: 0, duration: 0.65,
-          scrollTrigger: { trigger: ".hiw-heading", start: "top 85%", once: true },
-        }
-      );
-
-      gsap.fromTo(
-        ".hiw-step",
-        { opacity: 0, x: -24 },
-        {
-          opacity: 1, x: 0, duration: 0.55, stagger: 0.15, ease: "power2.out",
-          scrollTrigger: { trigger: ".hiw-steps", start: "top 80%", once: true },
-        }
-      );
-
-      // Animate connecting line progress on scroll
-      gsap.fromTo(
-        ".hiw-connector",
-        { scaleY: 0 },
-        {
-          scaleY: 1, duration: 0.6, stagger: 0.15, ease: "none",
-          scrollTrigger: { trigger: ".hiw-steps", start: "top 80%", once: true },
-        }
-      );
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
-    <section ref={sectionRef} className="relative py-20 sm:py-28 border-t border-border/30">
+    <section className="relative py-20 sm:py-28 border-t border-border/30">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
 
         <div className="hiw-heading text-center mb-14">

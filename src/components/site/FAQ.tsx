@@ -1,10 +1,5 @@
-import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useLanguage } from "@/contexts/LanguageContext";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const FAQ_DATA = {
   q1: {
@@ -46,37 +41,18 @@ const FAQ_DATA = {
 };
 
 export const FAQ = () => {
-  const sectionRef = useRef<HTMLElement>(null);
   const { language, t: translate } = useLanguage();
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        ".faq-inner",
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1, y: 0, duration: 0.65,
-          scrollTrigger: { trigger: ".faq-inner", start: "top 85%", once: true },
-        }
-      );
-    }, sectionRef);
-    return () => ctx.revert();
-  }, []);
-
   const faqs = [
-    { q: FAQ_DATA.q1.q[language], a: FAQ_DATA.q1.a[language] },
-    { q: FAQ_DATA.q2.q[language], a: FAQ_DATA.q2.a[language] },
-    { q: FAQ_DATA.q3.q[language], a: FAQ_DATA.q3.a[language] },
-    { q: FAQ_DATA.q4.q[language], a: FAQ_DATA.q4.a[language] },
-    { q: FAQ_DATA.q5.q[language], a: FAQ_DATA.q5.a[language] },
-    { q: FAQ_DATA.q6.q[language], a: FAQ_DATA.q6.a[language] },
-    { q: FAQ_DATA.q7.q[language], a: FAQ_DATA.q7.a[language] },
-    { q: FAQ_DATA.q8.q[language], a: FAQ_DATA.q8.a[language] },
-    { q: FAQ_DATA.q9.q[language], a: FAQ_DATA.q9.a[language] },
+    { q: FAQ_DATA.q1.q[language], a: FAQ_DATA.q1.a[language] }, // How to pay
+    { q: FAQ_DATA.q4.q[language], a: FAQ_DATA.q4.a[language] }, // Activation time
+    { q: FAQ_DATA.q3.q[language], a: FAQ_DATA.q3.a[language] }, // Monthly vs Lifetime
+    { q: FAQ_DATA.q7.q[language], a: FAQ_DATA.q7.a[language] }, // What's included
+    { q: FAQ_DATA.q8.q[language], a: FAQ_DATA.q8.a[language] }, // Refund policy
   ];
 
   return (
-    <section id="faq" ref={sectionRef} className="relative py-20 sm:py-28 border-t border-border/30">
+    <section id="faq" className="relative py-20 sm:py-28 border-t border-border/30">
       <div className="faq-inner mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
           <p className="text-xs font-mono uppercase tracking-widest text-primary mb-3">{translate('faq.title')}</p>

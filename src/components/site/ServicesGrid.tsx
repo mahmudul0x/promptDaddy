@@ -1,6 +1,3 @@
-import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   MessageSquare, Bot, Image, BriefcaseBusiness,
   Workflow, Search, Wand2, Video, ArrowRight,
@@ -8,8 +5,6 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const SERVICES = [
   {
@@ -89,62 +84,10 @@ const SERVICES = [
 ];
 
 export const ServicesGrid = () => {
-  const sectionRef = useRef<HTMLElement>(null);
   const { t } = useLanguage();
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Heading
-      gsap.fromTo(
-        ".sg-heading",
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1, y: 0, duration: 0.7,
-          scrollTrigger: {
-            trigger: ".sg-heading",
-            start: "top 85%",
-            once: true,
-          },
-        }
-      );
-
-      // Cards stagger
-      gsap.fromTo(
-        ".sg-card",
-        { opacity: 0, y: 40, scale: 0.97 },
-        {
-          opacity: 1, y: 0, scale: 1,
-          duration: 0.55,
-          stagger: 0.07,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: ".sg-grid",
-            start: "top 80%",
-            once: true,
-          },
-        }
-      );
-
-      // CTA row
-      gsap.fromTo(
-        ".sg-cta",
-        { opacity: 0, y: 20 },
-        {
-          opacity: 1, y: 0, duration: 0.6,
-          scrollTrigger: {
-            trigger: ".sg-cta",
-            start: "top 90%",
-            once: true,
-          },
-        }
-      );
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
-    <section id="services" ref={sectionRef} className="relative py-20 sm:py-28">
+    <section id="services" className="relative py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
         {/* Heading */}
@@ -164,57 +107,70 @@ export const ServicesGrid = () => {
 
         {/* Grid */}
         <div className="sg-grid grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {SERVICES.map(({ icon: Icon, titleKey, descKey, tag, accent, badge }) => (
+          {SERVICES.map(({ icon: Icon, titleKey, descKey, tag, accent, badge, img }) => (
             <div
               key={titleKey}
-              className="sg-card group relative rounded-2xl border border-border/40 bg-card/60 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-border/80 hover:shadow-lg overflow-hidden cursor-pointer"
+              className="sg-card group relative rounded-2xl border border-border/40 bg-card/60 transition-all duration-300 hover:-translate-y-1 hover:border-border/70 hover:shadow-xl overflow-hidden cursor-pointer"
             >
-              {/* Hover glow */}
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none"
-                style={{ background: `radial-gradient(ellipse at top left, ${accent}10 0%, transparent 65%)` }}
-              />
-
-              {/* Top row */}
-              <div className="flex items-start justify-between mb-3">
+              {/* Image */}
+              <div className="relative h-40 overflow-hidden">
+                <img
+                  src={img}
+                  alt={t(titleKey)}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                {/* gradient overlay */}
                 <div
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-xl shrink-0"
-                  style={{ background: `${accent}18`, border: `1px solid ${accent}30` }}
-                >
-                  <Icon className="h-5 w-5" style={{ color: accent }} strokeWidth={2} />
-                </div>
-                {badge && (
-                  <span
-                    className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                    style={{ background: `${accent}18`, color: accent, border: `1px solid ${accent}30` }}
+                  className="absolute inset-0"
+                  style={{ background: `linear-gradient(to bottom, ${accent}22 0%, rgba(0,0,0,0.55) 100%)` }}
+                />
+                {/* accent bar */}
+                <div className="absolute top-0 left-0 right-0 h-[2px]"
+                  style={{ background: `linear-gradient(90deg, transparent, ${accent}, transparent)` }} />
+
+                {/* icon + badge row */}
+                <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
+                  <div
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-xl backdrop-blur-md"
+                    style={{ background: `${accent}30`, border: `1px solid ${accent}50` }}
                   >
-                    {badge}
-                  </span>
-                )}
+                    <Icon className="h-4.5 w-4.5" style={{ color: accent, height: 18, width: 18 }} strokeWidth={2} />
+                  </div>
+                  {badge && (
+                    <span
+                      className="text-[10px] font-bold px-2.5 py-1 rounded-full backdrop-blur-md"
+                      style={{ background: `${accent}30`, color: "#fff", border: `1px solid ${accent}50` }}
+                    >
+                      {badge}
+                    </span>
+                  )}
+                </div>
               </div>
 
               {/* Content */}
-              <h3 className="text-sm font-bold text-foreground mb-1.5 group-hover:text-primary transition-colors">
-                {t(titleKey)}
-              </h3>
-              <p className="text-xs text-muted-foreground leading-relaxed mb-3">{t(descKey)}</p>
+              <div className="p-5">
+                <h3 className="text-sm font-bold text-foreground mb-1.5 group-hover:text-primary transition-colors">
+                  {t(titleKey)}
+                </h3>
+                <p className="text-xs text-muted-foreground leading-relaxed mb-4">{t(descKey)}</p>
 
-              {/* Tag */}
-              <div className="flex items-center justify-between">
-                <span
-                  className="text-sm font-bold px-2 py-1 rounded-lg"
-                  style={{ 
-                    color: accent,
-                    background: `${accent}18`,
-                    border: `1px solid ${accent}35`,
-                  }}
-                >
-                  {tag}
-                </span>
-                <ArrowRight
-                  className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-primary group-hover:translate-x-0.5 transition-all"
-                />
+                {/* Tag + arrow */}
+                <div className="flex items-center justify-between">
+                  <span
+                    className="text-xs font-bold px-2.5 py-1 rounded-lg"
+                    style={{ color: accent, background: `${accent}15`, border: `1px solid ${accent}30` }}
+                  >
+                    {tag}
+                  </span>
+                  <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
+                </div>
               </div>
+
+              {/* Hover glow */}
+              <div
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                style={{ background: `radial-gradient(ellipse at top, ${accent}08 0%, transparent 70%)` }}
+              />
             </div>
           ))}
         </div>

@@ -4,13 +4,9 @@ import {
   Copy, Check, Sparkles, Zap, Image, Wand2, MessageSquare,
   Bot, ArrowRight, Loader2, X, ExternalLink,
 } from "lucide-react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Button } from "@/components/ui/button";
 import { useDemoPrompts } from "@/hooks/useData";
 import type { DemoPrompt } from "@/data/types";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const CATEGORY_ICONS: Record<string, React.ElementType> = {
   Email: MessageSquare, Content: Zap, Image,
@@ -182,30 +178,18 @@ function PromptCard({ prompt, onOpen }: { prompt: DemoPrompt; onOpen: () => void
 
 /* ── Section ──────────────────────────────────────────────── */
 export function DemoPromptsSection() {
-  const sectionRef = useRef<HTMLElement>(null);
   const { data: prompts = [], isLoading } = useDemoPrompts();
   const [selected, setSelected] = useState<DemoPrompt | null>(null);
 
   const activePrompts = prompts
     .filter(p => p.is_active)
     .sort((a, b) => a.sort_order - b.sort_order)
-    .slice(0, 8); // show max 8 on homepage
-
-  useEffect(() => {
-    if (!sectionRef.current || activePrompts.length === 0) return;
-    const ctx = gsap.context(() => {
-      gsap.from(".demo-heading", { opacity: 0, y: 20, duration: 0.7, ease: "power2.out",
-        scrollTrigger: { trigger: ".demo-heading", start: "top 85%" } });
-      gsap.from(".demo-card", { opacity: 0, y: 24, duration: 0.55, ease: "power2.out", stagger: 0.08,
-        scrollTrigger: { trigger: ".demo-card", start: "top 88%" } });
-    }, sectionRef);
-    return () => ctx.revert();
-  }, [activePrompts.length]);
+    .slice(0, 8);
 
   if (!isLoading && activePrompts.length === 0) return null;
 
   return (
-    <section id="demo" ref={sectionRef} className="py-20 relative">
+    <section id="demo" className="py-20 relative">
       {selected && <DetailModal prompt={selected} onClose={() => setSelected(null)} />}
 
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
