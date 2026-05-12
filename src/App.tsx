@@ -45,7 +45,6 @@ import SeedancePrompts from './pages/dashboard/SeedancePrompts';
 import NanoBananaPrompts from './pages/dashboard/NanoBananaPrompts';
 import GptImagePrompts from './pages/dashboard/GptImagePrompts';
 import AdminDashboard from './pages/admin/AdminDashboard';
-import AdminDemoPrompts from './pages/admin/AdminDemoPrompts';
 
 const queryClient = new QueryClient();
 
@@ -100,7 +99,6 @@ const App = () => (
               </Route>
 
               <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/admin/demo-prompts" element={<AdminDemoPrompts />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
               </LanguageProvider>

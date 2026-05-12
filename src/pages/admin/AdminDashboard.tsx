@@ -71,6 +71,28 @@ interface AdminEntry {
 }
 type SubStatus = 'lifetime' | 'monthly-active' | 'monthly-expiring' | 'monthly-expired' | 'free';
 
+const DEMO_CATEGORIES = ['Email', 'Content', 'Image', 'GPT Image', 'Claude Skill', 'Social', 'Video', 'Automation'];
+interface DemoPromptRow {
+  id: number;
+  title: string;
+  prompt: string;
+  category: string;
+  image_url: string | null;
+  test_url: string;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+}
+interface DemoFormState {
+  title: string;
+  prompt: string;
+  category: string;
+  image_url: string;
+  test_url: string;
+  sort_order: number;
+  is_active: boolean;
+}
+
 const PAY_STATUS = {
   pending:  { label: 'Pending',  dot: 'bg-yellow-400', text: 'text-yellow-400', bg: 'bg-yellow-400/10 border-yellow-400/20' },
   approved: { label: 'Approved', dot: 'bg-green-400',  text: 'text-green-400',  bg: 'bg-green-400/10  border-green-400/20'  },
@@ -241,7 +263,7 @@ export default function AdminDashboard() {
   // ── ALL hooks declared unconditionally at the top ──
   const [adminList, setAdminList]         = useState<AdminEntry[]>([]);
   const [adminListLoaded, setAdminListLoaded] = useState(false);
-  const [tab, setTab]                     = useState<'overview' | 'payments' | 'users' | 'subscriptions' | 'trending' | 'admins'>('overview');
+  const [tab, setTab]                     = useState<'overview' | 'payments' | 'users' | 'subscriptions' | 'trending' | 'admins' | 'demo-prompts'>('overview');
   const [requests, setRequests]           = useState<PaymentRequest[]>([]);
   const [users, setUsers]                 = useState<Profile[]>([]);
   const [fetching, setFetching]           = useState(true);
@@ -278,6 +300,16 @@ export default function AdminDashboard() {
   const [confirmRemoveAdmin, setConfirmRemoveAdmin] = useState<AdminEntry | null>(null);
   const [sidebarOpen, setSidebarOpen]             = useState(true);
   const [supabaseReady, setSupabaseReady]         = useState(false);
+  // Demo Prompts tab state
+  const [demoPrompts, setDemoPrompts]             = useState<DemoPromptRow[]>([]);
+  const [demoLoading, setDemoLoading]             = useState(false);
+  const [demoOpen, setDemoOpen]                   = useState(false);
+  const [demoEditing, setDemoEditing]             = useState<DemoPromptRow | null>(null);
+  const [demoSaving, setDemoSaving]               = useState(false);
+  const [demoImgUploading, setDemoImgUploading]   = useState(false);
+  const [demoForm, setDemoForm]                   = useState<DemoFormState>({
+    title: '', prompt: '', category: 'Email', image_url: '', test_url: 'https://chat.openai.com', sort_order: 1, is_active: true,
+  });
 
   // Compute isAdmin after all hooks
   const isAdmin = useMemo(() => 
@@ -456,7 +488,10 @@ export default function AdminDashboard() {
     if (tab === 'trending' && isAdmin) {
       fetchTrending();
     }
-  }, [tab, isAdmin, fetchTrending]);
+    if (tab === 'demo-prompts' && isAdmin) {
+      fetchDemoPrompts();
+    }
+  }, [tab, isAdmin, fetchTrending, fetchDemoPrompts]);
 
   // Reset pagination when filters change
   useEffect(() => { setPagePay(1); }, [searchPay, filterStatus, sortPay]);
@@ -705,6 +740,79 @@ export default function AdminDashboard() {
     setTpMsg(null);
   };
 
+  // ── Demo Prompts handlers ─────────────────────────────────
+  const fetchDemoPrompts = useCallback(async () => {
+    setDemoLoading(true);
+    try {
+      const { data, error } = await supabase.from('demo_prompts').select('*').order('sort_order', { ascending: true });
+      if (error) throw error;
+      setDemoPrompts((data || []) as DemoPromptRow[]);
+    } catch (e) {
+      console.error('fetchDemoPrompts error:', e);
+    } finally {
+      setDemoLoading(false);
+    }
+  }, []);
+
+  const openDemoForm = (row?: DemoPromptRow) => {
+    if (row) {
+      setDemoEditing(row);
+      setDemoForm({ title: row.title, prompt: row.prompt, category: row.category, image_url: row.image_url || '', test_url: row.test_url, sort_order: row.sort_order, is_active: row.is_active });
+    } else {
+      setDemoEditing(null);
+      setDemoForm({ title: '', prompt: '', category: 'Email', image_url: '', test_url: 'https://chat.openai.com', sort_order: (demoPrompts.length || 0) + 1, is_active: true });
+    }
+    setDemoOpen(true);
+  };
+
+  const handleDemoImgUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setDemoImgUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('upload_preset', CLOUDINARY_PRESET);
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, { method: 'POST', body: fd });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error?.message || 'Upload failed');
+      setDemoForm(f => ({ ...f, image_url: json.secure_url }));
+    } catch (err) {
+      console.error('Demo img upload error:', err);
+    } finally {
+      setDemoImgUploading(false);
+    }
+  };
+
+  const saveDemoPrompt = async () => {
+    if (!demoForm.title || !demoForm.prompt) return;
+    setDemoSaving(true);
+    try {
+      if (demoEditing) {
+        await supabase.from('demo_prompts').update({ ...demoForm, image_url: demoForm.image_url || null, updated_at: new Date().toISOString() }).eq('id', demoEditing.id);
+      } else {
+        await supabase.from('demo_prompts').insert({ ...demoForm, image_url: demoForm.image_url || null });
+      }
+      setDemoOpen(false);
+      fetchDemoPrompts();
+    } catch (err) {
+      console.error('saveDemoPrompt error:', err);
+    } finally {
+      setDemoSaving(false);
+    }
+  };
+
+  const deleteDemoPrompt = async (id: number) => {
+    if (!confirm('Delete this demo prompt?')) return;
+    try {
+      await supabase.from('demo_prompts').delete().eq('id', id);
+      setDemoPrompts(p => p.filter(x => x.id !== id));
+    } catch (err) {
+      console.error('deleteDemoPrompt error:', err);
+    }
+  };
+  // ─────────────────────────────────────────────────────────────
+
   const deleteTrendingPrompt = async (id: string) => {
     setTpDeleteId(id);
     try {
@@ -922,7 +1030,7 @@ const tabs = [
     { id: 'subscriptions', label: 'Subscriptions', icon: Crown, badge: expiringSoon.length || undefined },
     { id: 'trending',    label: 'Trending',   icon: Flame,        badge: undefined },
     { id: 'admins',     label: 'Admins',      icon: Shield,       badge: undefined },
-    { id: 'demo-prompts',label: 'Demo Prompts', icon: Sparkles,     badge: undefined, url: '/admin/demo-prompts' },
+    { id: 'demo-prompts',label: 'Demo Prompts', icon: Sparkles,     badge: undefined },
   ] as const;
 
   return (
@@ -2048,6 +2156,165 @@ const tabs = [
                   </div>
                 )}
               </div>
+            </div>
+          )}
+          {/* ══ DEMO PROMPTS ══ */}
+          {tab === 'demo-prompts' && (
+            <div className="space-y-5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-base font-black text-foreground flex items-center gap-2">
+                    <Sparkles className="h-5 w-5 text-violet-400" /> Demo Prompts
+                  </h2>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Free prompts shown on homepage and /demo page — {demoPrompts.filter(p => p.is_active).length} active
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <button onClick={fetchDemoPrompts} disabled={demoLoading}
+                    className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-all disabled:opacity-50">
+                    <RefreshCw className={`h-4 w-4 ${demoLoading ? 'animate-spin' : ''}`} />
+                  </button>
+                  <button onClick={() => openDemoForm()}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-violet-500/15 text-violet-400 hover:bg-violet-500/25 border border-violet-500/20 transition-all">
+                    <Plus className="h-3.5 w-3.5" /> Add Prompt
+                  </button>
+                </div>
+              </div>
+
+              {demoLoading ? (
+                <div className="flex items-center justify-center py-16">
+                  <div className="h-6 w-6 rounded-full border-2 border-violet-400 border-t-transparent animate-spin" />
+                </div>
+              ) : demoPrompts.length === 0 ? (
+                <div className="rounded-2xl border border-border/50 bg-card/60 py-16 text-center">
+                  <Sparkles className="h-8 w-8 text-muted-foreground/30 mx-auto mb-3" />
+                  <p className="text-sm text-muted-foreground">No demo prompts yet.</p>
+                  <button onClick={() => openDemoForm()} className="mt-4 px-4 py-2 rounded-xl text-xs font-semibold bg-violet-500/15 text-violet-400 border border-violet-500/20 hover:bg-violet-500/25 transition-all">
+                    Add First Prompt
+                  </button>
+                </div>
+              ) : (
+                <div className="rounded-2xl border border-border/50 bg-card/60 overflow-hidden">
+                  <table className="w-full text-xs">
+                    <thead className="border-b border-border/40 bg-secondary/30">
+                      <tr>
+                        <th className="text-left px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">#</th>
+                        <th className="text-left px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Title</th>
+                        <th className="text-left px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Category</th>
+                        <th className="text-left px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Image</th>
+                        <th className="text-left px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Status</th>
+                        <th className="text-right px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/20">
+                      {demoPrompts.map((row) => (
+                        <tr key={row.id} className="hover:bg-secondary/20 transition-colors">
+                          <td className="px-4 py-3 text-muted-foreground font-mono">{row.sort_order}</td>
+                          <td className="px-4 py-3 font-semibold text-foreground max-w-[200px] truncate">{row.title}</td>
+                          <td className="px-4 py-3">
+                            <span className="px-2 py-0.5 rounded-full bg-violet-500/10 text-violet-400 border border-violet-500/20 text-[10px] font-bold">{row.category}</span>
+                          </td>
+                          <td className="px-4 py-3">
+                            {row.image_url
+                              ? <img src={row.image_url} alt="" className="h-9 w-9 rounded-lg object-cover border border-border/40" />
+                              : <span className="text-muted-foreground/40">—</span>}
+                          </td>
+                          <td className="px-4 py-3">
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${row.is_active ? 'bg-green-500/10 text-green-400 border-green-500/20' : 'bg-muted text-muted-foreground border-border/30'}`}>
+                              {row.is_active ? 'Active' : 'Inactive'}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center justify-end gap-1">
+                              <button onClick={() => window.open(row.test_url, '_blank')} title="Test URL"
+                                className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-all">
+                                <ChevronRight className="h-3.5 w-3.5" />
+                              </button>
+                              <button onClick={() => openDemoForm(row)} title="Edit"
+                                className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-all">
+                                <Pencil className="h-3.5 w-3.5" />
+                              </button>
+                              <button onClick={() => deleteDemoPrompt(row.id)} title="Delete"
+                                className="p-1.5 rounded-lg text-muted-foreground hover:text-red-400 hover:bg-red-500/10 transition-all">
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {/* Add/Edit Dialog */}
+              {demoOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(6px)' }}>
+                  <div className="bg-card border border-border rounded-2xl p-6 max-w-lg w-full shadow-elegant max-h-[90vh] overflow-y-auto">
+                    <div className="flex items-center justify-between mb-5">
+                      <p className="text-sm font-bold text-foreground">{demoEditing ? 'Edit Demo Prompt' : 'Add Demo Prompt'}</p>
+                      <button onClick={() => setDemoOpen(false)} className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-all">
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5 block">Title *</label>
+                        <input value={demoForm.title} onChange={e => setDemoForm(f => ({ ...f, title: e.target.value }))} placeholder="Write Professional Email"
+                          className="w-full px-3 py-2.5 rounded-xl bg-secondary border border-border/50 text-xs text-foreground placeholder:text-muted-foreground/40 outline-none focus:border-violet-400/40 transition-colors" />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5 block">Category</label>
+                        <select value={demoForm.category} onChange={e => setDemoForm(f => ({ ...f, category: e.target.value }))}
+                          className="w-full px-3 py-2.5 rounded-xl bg-secondary border border-border/50 text-xs text-foreground outline-none focus:border-violet-400/40 transition-colors">
+                          {DEMO_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5 block">Prompt *</label>
+                        <textarea value={demoForm.prompt} onChange={e => setDemoForm(f => ({ ...f, prompt: e.target.value }))} rows={4} placeholder="Write your prompt here..."
+                          className="w-full px-3 py-2.5 rounded-xl bg-secondary border border-border/50 text-xs text-foreground placeholder:text-muted-foreground/40 outline-none focus:border-violet-400/40 transition-colors resize-none" />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5 block">Image (Optional)</label>
+                        <div className="flex items-center gap-3">
+                          <label className="flex items-center gap-2 px-3 py-2 rounded-xl border border-border/50 text-xs text-muted-foreground cursor-pointer hover:bg-secondary transition-colors">
+                            <ImageIcon className="h-3.5 w-3.5" />
+                            {demoImgUploading ? 'Uploading...' : 'Upload Image'}
+                            <input type="file" accept="image/*" onChange={handleDemoImgUpload} className="hidden" disabled={demoImgUploading} />
+                          </label>
+                          {demoForm.image_url && <img src={demoForm.image_url} alt="" className="h-10 w-10 rounded-lg object-cover border border-border/40" />}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5 block">Test URL</label>
+                        <input value={demoForm.test_url} onChange={e => setDemoForm(f => ({ ...f, test_url: e.target.value }))} placeholder="https://chat.openai.com"
+                          className="w-full px-3 py-2.5 rounded-xl bg-secondary border border-border/50 text-xs text-foreground placeholder:text-muted-foreground/40 outline-none focus:border-violet-400/40 transition-colors" />
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5 block">Sort Order</label>
+                          <input type="number" value={demoForm.sort_order} onChange={e => setDemoForm(f => ({ ...f, sort_order: parseInt(e.target.value) || 1 }))}
+                            className="w-full px-3 py-2.5 rounded-xl bg-secondary border border-border/50 text-xs text-foreground outline-none focus:border-violet-400/40 transition-colors" />
+                        </div>
+                        <div className="flex items-center gap-2 pt-5">
+                          <input type="checkbox" id="demoActive" checked={demoForm.is_active} onChange={e => setDemoForm(f => ({ ...f, is_active: e.target.checked }))} className="h-4 w-4 accent-violet-500" />
+                          <label htmlFor="demoActive" className="text-xs font-medium text-foreground cursor-pointer">Active</label>
+                        </div>
+                      </div>
+                      <div className="flex justify-end gap-2 pt-2">
+                        <button onClick={() => setDemoOpen(false)} className="px-4 py-2 rounded-xl text-xs font-medium border border-border/60 text-muted-foreground hover:text-foreground transition-all">Cancel</button>
+                        <button onClick={saveDemoPrompt} disabled={demoSaving || !demoForm.title || !demoForm.prompt}
+                          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-violet-500/15 text-violet-400 hover:bg-violet-500/25 border border-violet-500/20 transition-all disabled:opacity-50">
+                          {demoSaving ? <RefreshCw className="h-3.5 w-3.5 animate-spin" /> : <CheckCircle className="h-3.5 w-3.5" />}
+                          {demoEditing ? 'Update' : 'Save'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
