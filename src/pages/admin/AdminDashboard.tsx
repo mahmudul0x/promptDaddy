@@ -1001,6 +1001,22 @@ export default function AdminDashboard() {
   );
   const maxRev = Math.max(...last7Days.map(d => d.rev), 1);
 
+  /* ── Derived constants (must be before early returns) ── */
+  const greeting = (() => {
+    const h = new Date().getHours();
+    return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  })();
+
+  const tabs = [
+    { id: 'overview',      label: 'Overview',      icon: LayoutDashboard, badge: undefined as number | undefined },
+    { id: 'payments',      label: 'Payments',      icon: CreditCard,      badge: pendingReqs.length || undefined as number | undefined },
+    { id: 'users',         label: 'Users',          icon: Users,           badge: undefined as number | undefined },
+    { id: 'subscriptions', label: 'Subscriptions',  icon: Crown,           badge: expiringSoon.length || undefined as number | undefined },
+    { id: 'trending',      label: 'Trending',       icon: Flame,           badge: undefined as number | undefined },
+    { id: 'admins',        label: 'Admins',         icon: Shield,          badge: undefined as number | undefined },
+    { id: 'demo-prompts',  label: 'Demo Prompts',   icon: Sparkles,        badge: undefined as number | undefined },
+  ] as const;
+
   /* ── Render ── */
   if (loading) {
     return (
@@ -1017,21 +1033,6 @@ export default function AdminDashboard() {
   if (adminList.length > 0 && !isAdmin) {
     return null;
   }
-
-  const greeting = (() => {
-    const h = new Date().getHours();
-    return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
-  })();
-
-const tabs = [
-    { id: 'overview',      label: 'Overview',      icon: LayoutDashboard, badge: undefined },
-    { id: 'payments',    label: 'Payments',   icon: CreditCard,    badge: pendingReqs.length || undefined },
-    { id: 'users',       label: 'Users',        icon: Users,         badge: undefined },
-    { id: 'subscriptions', label: 'Subscriptions', icon: Crown, badge: expiringSoon.length || undefined },
-    { id: 'trending',    label: 'Trending',   icon: Flame,        badge: undefined },
-    { id: 'admins',     label: 'Admins',      icon: Shield,       badge: undefined },
-    { id: 'demo-prompts',label: 'Demo Prompts', icon: Sparkles,     badge: undefined },
-  ] as const;
 
   return (
     <div className="min-h-screen bg-background text-foreground flex">
