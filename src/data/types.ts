@@ -368,6 +368,21 @@ export interface GptImagePrompt {
   created_at: string;
 }
 
+export interface WebpagePrompt {
+  id: number;
+  title: string;
+  author: string | null;
+  author_x_url: string | null;
+  published_at: string | null;
+  language: string | null;
+  description: string | null;
+  prompt: string;
+  source_tweet: string | null;
+  tags: string[] | null;
+  model: string | null;
+  created_at: string;
+}
+
 export interface DemoPrompt {
   id: number;
   title: string;
